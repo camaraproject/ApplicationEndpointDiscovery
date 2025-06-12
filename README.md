@@ -11,13 +11,13 @@
 
 Sandbox API Repository to describe, develop, document, and test the ApplicationEndpointDiscovery Service API(s) within the Sub Project [Edge Cloud](https://lf-camaraproject.atlassian.net/wiki/x/IwEpBQ).
 
-* API Repository [wiki page](https://lf-camaraproject.atlassian.net/wiki/x/IwEpBQ) !! Replace this link with the actual link to the new repository wiki page when created
+* API Repository [wiki page](https://lf-camaraproject.atlassian.net/wiki/spaces/CAM/pages/96928818/EdgeCloud+Application+Endpoint+Discovery+API+description)
 
 ## Scope
 
 * Service API(s) “ApplicationEndpointDiscovery” (see APIBacklog.md) 
 * The API(s) provide(s) the API consumer with the ability to:  
-  * §Short API scope description§ !! Add here a scope description according to the API proposal
+  * Discover the optimal application endpoint(s) that a given end-user's device can connect to.
 * Describe, develop, document, and test the API(s)
 * Started: July 2022 (in [EdgeCloud](https://github.com/camaraproject/EdgeCloud) repository)
 <!-- * Incubating stage since: {{incubation date}} --> 
