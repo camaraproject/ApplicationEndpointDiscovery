@@ -76,9 +76,11 @@ info:
     Cloud. It is used when the application has been onboarded using the Edge
     Application Management API.
       - `applicationEndpointsId:` A unique identifier for the registered
-    application endpoint. It is used when the application has not been onboarded
+    application endpoint(s). It is used when the application has not been onboarded
     using the Edge Application Management API, and available endpoints have been
-    registered by the Edge Application Registration API.
+    registered by the Edge Application Registration API. Every endpoint registered
+    under the same `applicationEndpointsId` identifier belongs to the same
+    application.
 
     ## Outputs
 
@@ -105,9 +107,11 @@ info:
       Cloud. It is used when the application has been onboarded using the Edge
       Application Management API.
       - `applicationEndpointsId:` A unique identifier for the registered
-      application endpoint. It is used when the application has not been onboarded
+      application endpoint(s). It is used when the application has not been onboarded
       using the Edge Application Management API, and available endpoints have been
-      registered by the Edge Application Registration API.
+      registered by the Edge Application Registration API. Every endpoint
+      registered under the same `applicationEndpointsId` identifier belongs to
+      the same application.
     - `applicationServerProviderName:` Optionally, the Application Provider
     identifier
     - `applicationProfileId:` Optionally, the Application Profile identifier
@@ -483,7 +487,8 @@ components:
     ApplicationEndpointsId:
       description: |
         A system-defined string identifier representing
-        one or more registered Application Endpoints.
+        one or more registered Application Endpoints that belong
+        to the same application.
       type: string
       format: uuid
       example: "4d596ac1-7822-4927-a3c5-d72e1f922c94"
