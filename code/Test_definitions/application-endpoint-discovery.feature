@@ -15,7 +15,7 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptima
     And the resource "/application-endpoint-discovery/vwip/retrieve-optimal-app-endpoints"                                                     |
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" compiles with the OAS schema at "#/components/headers/x-correlator"
+    And the header "x-correlator" complies with the OAS schema at "#/components/headers/x-correlator"
     And the request body is set by default to a request body compliant with the schema
 #### Happy Path Scenarios #########
 
