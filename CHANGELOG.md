@@ -8,23 +8,25 @@
 
 The below sections record the changes for each API version in each release as follows:
 
-* for an alpha release, the delta with respect to the previous release
-* for the first release-candidate, all changes since the last public release
-* for subsequent release-candidate(s), only the delta to the previous release-candidate
-* for a public release, the consolidated changes since the previous public release
+- for an alpha release, the delta with respect to the previous release
+- for the first release-candidate, all changes since the last public release
+- for subsequent release-candidate(s), only the delta to the previous release-candidate
+- for a public release, the consolidated changes since the previous public release
 
 <!--Repeat the below release section (header 1 and subsections) at the top of this file for each new (pre-)release-->
 
-# r1.1
+# r1.1 - rc
 
 ## Release Notes
 
 This release contains the definition and documentation of
-* application-endpoint-discover v0.1.0-rc1, a release-candidate pre-release
+
+- application-endpoint-discover v0.1.0-rc1, a release-candidate pre-release
 
 The API definition(s) are based on
-* Commonalities r3.2
-* Identity and Consent Management r3.2
+
+- Commonalities r3.2
+- Identity and Consent Management r3.2
 
 ## application-endpoint-discovery v0.1.0-rc1
 
@@ -34,4 +36,3 @@ The API definition(s) are based on
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.1/code/API_definitions/application-endpoint-discovery.yaml&nocors)
   - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.1/code/API_definitions/application-endpoint-discovery.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r1.1/code/API_definitions/application-endpoint-discovery.yaml)
-
