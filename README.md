@@ -11,7 +11,7 @@
 
 Sandbox API Repository to describe, develop, document, and test the ApplicationEndpointDiscovery Service API(s) within the Sub Project [Edge Cloud](https://lf-camaraproject.atlassian.net/wiki/x/IwEpBQ).
 
-* API Repository [wiki page](https://lf-camaraproject.atlassian.net/wiki/spaces/CAM/pages/137166849/ApplicationEndpointDiscovery)
+* API Repository [wiki page](https://lf-camaraproject.atlassian.net/wiki/x/AQAtC)
 
 ## Scope
 
