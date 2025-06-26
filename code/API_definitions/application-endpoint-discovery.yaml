@@ -230,7 +230,7 @@ externalDocs:
   description: Product documentation at CAMARA
   url: https://github.com/camaraproject
 servers:
-  - url: "{apiRoot}/application-endpoint-discovery/v0rc1"
+  - url: "{apiRoot}/application-endpoint-discovery/v0.1rc1"
     variables:
       apiRoot:
         default: https://localhost:443
