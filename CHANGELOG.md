@@ -19,18 +19,18 @@ The below sections record the changes for each API version in each release as fo
 
 ## Release Notes
 
-This release contains the definition and documentation of
+This pre-release contains the definition and documentation of
 
-- application-endpoint-discovery v0.1.0-rc1, a release-candidate pre-release
+- application-endpoint-discovery v0.1.0-rc.1
 
 The API definition(s) are based on
 
 - Commonalities r3.2
 - Identity and Consent Management r3.2
 
-## application-endpoint-discovery v0.1.0-rc1
+## application-endpoint-discovery v0.1.0-rc.1
 
-**application-endpoint-discovery v0.1.0-rc1 is the initial new release candidate version of this API, including initial documentation and implementation code.**
+**application-endpoint-discovery v0.1.0-rc.1 is the initial new release candidate version of this API, including initial documentation.**
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.1/code/API_definitions/application-endpoint-discovery.yaml&nocors)

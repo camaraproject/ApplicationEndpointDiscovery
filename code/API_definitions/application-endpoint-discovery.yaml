@@ -215,20 +215,14 @@ info:
     in compliance with privacy regulations, upholding the principles of
     transparency and user-centric privacy-by-design.
 
-    # Further info and support
-
-    (FAQs will be added in a later version of the documentation)
-
     ---
-  contact:
-    email: sp-edc@lists.camaraproject.org
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   x-camara-commonalities: 0.6
 externalDocs:
   description: Product documentation at CAMARA
-  url: https://github.com/camaraproject
+  url: https://github.com/camaraproject/ApplicationEndpointDiscovery
 servers:
   - url: "{apiRoot}/application-endpoint-discovery/v0.1rc1"
     variables:
@@ -319,7 +313,7 @@ components:
     openId:
       description: OpenID Provider Configuration Information.
       type: openIdConnect
-      openIdConnectUrl: .well-known/openid-configuration
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
   headers:
     x-correlator:
       description: |
