@@ -15,7 +15,7 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0-rc.1 - Operation getO
     And the resource "/application-endpoint-discovery/v0.1rc1/retrieve-optimal-app-endpoints"                                                     |
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" complies with the OAS schema at "#/components/headers/x-correlator"
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the request body is set by default to a request body compliant with the schema
 #### Happy Path Scenarios #########
 
