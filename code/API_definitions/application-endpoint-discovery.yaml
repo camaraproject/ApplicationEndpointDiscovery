@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.3
 info:
-  title: Application Endpoint Discovery API
+  title: Application Endpoint Discovery
   version: 0.1.0-rc.1
   description: |
     The Application Endpoint Discovery API returns the optimal application
@@ -195,7 +195,7 @@ info:
     will return an error code with the `422 SERVICE_NOT_APPLICABLE` error
     code.
 
-    # Authentication and Authorization
+    # Authorization and authentication
 
     The "Camara Security and Interoperability Profile" provides details of how
     an API consumer requests an access token. Please refer to
@@ -227,8 +227,10 @@ servers:
   - url: "{apiRoot}/application-endpoint-discovery/v0.1rc1"
     variables:
       apiRoot:
-        default: https://localhost:443
-        description: API root.
+        default: http://localhost:9091
+        description: |
+          API root, defined by the service provider, e.g. `api.example.com` or
+          `api.example.com/somepath`
 
 tags:
   - name: Application Endpoint Discovery
@@ -265,13 +267,13 @@ paths:
       responses:
         "200":
           description: |
-           Successful response, returning the optimal App Instance Endpoint(s)
-           to the user device identified in the request body. The response
-           will include the endpoint(s) exposed by the Application Instance(s)
-           with the shortest network path to the end user device identified in the
-           request. There can be multiple application endpoints returned in the
-           response and the API consumer can choose the one that best suits
-           their needs.
+           Successful response, returning the optimal Application Instance
+           Endpoint(s) to the user device identified in the request body.
+           The response will include the endpoint(s) exposed by the Application
+           Instance(s) with the shortest network path to the end user device
+           identified in the request. There can be multiple application endpoints
+           returned in the response and the API consumer can choose the one that best
+           suits their needs.
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -299,8 +301,8 @@ paths:
         device identified in the request.
       description: |
         On receiving this request, the network will return the endpoint(s)
-        of the App Instance(s) with the shortest network path to the end user
-        device identified in the request.
+        of the Application Instance(s) with the shortest network path to the
+        end user device identified in the request.
 components:
   securitySchemes:
     openId:

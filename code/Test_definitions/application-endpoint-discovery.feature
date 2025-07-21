@@ -104,11 +104,11 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0-rc.1 - Operation getO
     And the response property "$.message" contains a user friendly text
 
     Examples:
-      | device_identifier          | oas_spec_schema                             |
-      | $.device.phoneNumber       | /components/schemas/PhoneNumber             |
-      | $.device.ipv4Address       | /components/schemas/DeviceIpv4Addr          |
-      | $.device.ipv6Address       | /components/schemas/SingleIpv6Addr          |
-      | $.device.networkIdentifier | /components/schemas/NetworkAccessIdentifier |
+      | device_identifier                | oas_spec_schema                             |
+      | $.device.phoneNumber             | /components/schemas/PhoneNumber             |
+      | $.device.ipv4Address             | /components/schemas/DeviceIpv4Addr          |
+      | $.device.ipv6Address             | /components/schemas/SingleIpv6Addr          |
+      | $.device.networkAccessIdentifier | /components/schemas/NetworkAccessIdentifier |
 
   @application_endpoint_discovery_400.3_error_app_empty
   Scenario: The appId and applicationEndpointsId parameters are not included in RequestBody
