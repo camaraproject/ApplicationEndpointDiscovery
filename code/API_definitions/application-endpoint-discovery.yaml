@@ -1,8 +1,8 @@
 ---
 openapi: 3.0.3
 info:
-  title: Application Endpoint Discovery API
-  version: wip
+  title: Application Endpoint Discovery
+  version: 0.1.0-rc.1
   description: |
     The Application Endpoint Discovery API returns the optimal application
     endpoint(s) that a given end-user's device can connect to.
@@ -195,7 +195,7 @@ info:
     will return an error code with the `422 SERVICE_NOT_APPLICABLE` error
     code.
 
-    # Authentication and Authorization
+    # Authorization and authentication
 
     The "Camara Security and Interoperability Profile" provides details of how
     an API consumer requests an access token. Please refer to
@@ -215,26 +215,22 @@ info:
     in compliance with privacy regulations, upholding the principles of
     transparency and user-centric privacy-by-design.
 
-    # Further info and support
-
-    (FAQs will be added in a later version of the documentation)
-
     ---
-  contact:
-    email: sp-edc@lists.camaraproject.org
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   x-camara-commonalities: 0.6
 externalDocs:
   description: Product documentation at CAMARA
-  url: https://github.com/camaraproject/EdgeCloud
+  url: https://github.com/camaraproject/ApplicationEndpointDiscovery
 servers:
-  - url: "{apiRoot}/application-endpoint-discovery/vwip"
+  - url: "{apiRoot}/application-endpoint-discovery/v0.1rc1"
     variables:
       apiRoot:
-        default: https://localhost:443
-        description: API root.
+        default: http://localhost:9091
+        description: |
+          API root, defined by the service provider, e.g. `api.example.com` or
+          `api.example.com/somepath`
 
 tags:
   - name: Application Endpoint Discovery
@@ -251,16 +247,9 @@ paths:
         - name: x-correlator
           in: header
           required: false
-          description: |
-            When the API Consumer includes the "x-correlator" header in the
-            request, the API provider must include it in the response with
-            the same value that was used in the request. Otherwise, it is
-            optional to include the "x-correlator" header in the response with
-            any valid value. Recommendation is to use UUID for values.
+          description: Correlation id for the different services
           schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-            example: "b4333c46-49c0-4f62-80d7-f0ef930f1c46"
+            $ref: "#/components/schemas/XCorrelator"
       requestBody:
         content:
           application/json:
@@ -278,13 +267,13 @@ paths:
       responses:
         "200":
           description: |
-           Successful response, returning the optimal App Instance Endpoint(s)
-           to the user device identified in the request body. The response
-           will include the endpoint(s) exposed by the Application Instance(s)
-           with the shortest network path to the end user device identified in the
-           request. There can be multiple application endpoints returned in the
-           response and the API consumer can choose the one that best suits
-           their needs.
+           Successful response, returning the optimal Application Instance
+           Endpoint(s) to the user device identified in the request body.
+           The response will include the endpoint(s) exposed by the Application
+           Instance(s) with the shortest network path to the end user device
+           identified in the request. There can be multiple application endpoints
+           returned in the response and the API consumer can choose the one that best
+           suits their needs.
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -312,26 +301,20 @@ paths:
         device identified in the request.
       description: |
         On receiving this request, the network will return the endpoint(s)
-        of the App Instance(s) with the shortest network path to the end user
-        device identified in the request.
+        of the Application Instance(s) with the shortest network path to the
+        end user device identified in the request.
 components:
   securitySchemes:
     openId:
       description: OpenID Provider Configuration Information.
       type: openIdConnect
-      openIdConnectUrl: .well-known/openid-configuration
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
   headers:
     x-correlator:
-      description: |
-       When the API Consumer includes the "x-correlator" header in the request,
-        the API provider must include it in the response with the same value
-        that was used in the request. Otherwise, it is optional to include the
-        "X-Correlator" header in the response with any valid value.
-        Recommendation is to use UUID for values.
+      description: Correlation id for the different services
       required: false
       schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+        $ref: "#/components/schemas/XCorrelator"
   schemas:
     Device:
       description: |
@@ -467,6 +450,12 @@ components:
       type: string
       format: ipv6
       example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+
+    XCorrelator:
+      description: Correlation id for the different services
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: "b4333c46-49c0-4f62-80d7-f0ef930f1c46"
 
     EndpointDiscoveryInfo:
       description: |

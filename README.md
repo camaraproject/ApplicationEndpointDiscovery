@@ -24,12 +24,13 @@ Sandbox API Repository to describe, develop, document, and test the ApplicationE
 
 ## Release Information
 
-The repository has no (pre)releases yet, work in progress is within the main branch.
 <!-- Optional: an explicit listing of the latest (pre-)release with additional information, e.g. links to the API definitions -->
 <!-- In addition use/uncomment one or multiple the following alternative options when becoming applicable -->
-<!-- Pre-releases of this sub project are available in https://github.com/camaraproject/ApplicationEndpointDiscovery/releases -->
+**NEW**: First pre-release [r1.1](https://github.com/camaraproject/ApplicationEndpointDiscovery/releases/tag/r1.1) with application-endpoint-discovery v0.1.0-rc.1 is available.
+
+Pre-releases of this sub project are available in https://github.com/camaraproject/ApplicationEndpointDiscovery/releases
 <!-- The latest public release is available here: https://github.com/camaraproject/ApplicationEndpointDiscovery/releases/latest -->
-<!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/main/CHANGELOG.md) -->
+For changes see [CHANGELOG.md](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/main/CHANGELOG.md)
 
 ## Contributing
 

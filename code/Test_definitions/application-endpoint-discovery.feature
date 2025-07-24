@@ -1,5 +1,5 @@
   @application_endpoint_discovery
-Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptimalAppEndpoints
+Feature: CAMARA Application Endpoint Discovery API, v0.1.0-rc.1 - Operation getOptimalAppEndpoints
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -12,10 +12,10 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptima
 
   Background:
     Given an environment at "apiRoot"
-    And the resource "/application-endpoint-discovery/vwip/retrieve-optimal-app-endpoints"                                                     |
+    And the resource "/application-endpoint-discovery/v0.1rc1/retrieve-optimal-app-endpoints"                                                     |
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" complies with the OAS schema at "#/components/headers/x-correlator"
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the request body is set by default to a request body compliant with the schema
 #### Happy Path Scenarios #########
 
@@ -104,11 +104,11 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptima
     And the response property "$.message" contains a user friendly text
 
     Examples:
-      | device_identifier          | oas_spec_schema                             |
-      | $.device.phoneNumber       | /components/schemas/PhoneNumber             |
-      | $.device.ipv4Address       | /components/schemas/DeviceIpv4Addr          |
-      | $.device.ipv6Address       | /components/schemas/DeviceIpv6Address       |
-      | $.device.networkIdentifier | /components/schemas/NetworkAccessIdentifier |
+      | device_identifier                | oas_spec_schema                             |
+      | $.device.phoneNumber             | /components/schemas/PhoneNumber             |
+      | $.device.ipv4Address             | /components/schemas/DeviceIpv4Addr          |
+      | $.device.ipv6Address             | /components/schemas/SingleIpv6Addr          |
+      | $.device.networkAccessIdentifier | /components/schemas/NetworkAccessIdentifier |
 
   @application_endpoint_discovery_400.3_error_app_empty
   Scenario: The appId and applicationEndpointsId parameters are not included in RequestBody
@@ -160,7 +160,7 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptima
 
   @application_endpoint_discovery_403.1_error_permissions_denied
   Scenario: Client does not have sufficient permissions to perform this action
-    Given header "Authorization" set to an access token not including scope "connected-network-type:read"
+    Given header "Authorization" set to an access token not including scope "application-endpoint-discovery:app-endpoints:read"
     And the request body is set to a valid request body
     When the HTTP POST request "getOptimalAppEndpoints" is sent
     Then the response status code is 403
@@ -249,7 +249,7 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptima
 # Error code 503
 #################
 
-  @connected_network_type_503_network_error
+  @application_endpoint_discovery_503_network_error
   Scenario: Network error temporarily prevents the connected network type from being retrieved
   # This test is for use by the API provider only
     Given a valid testing device supported by the service, identified by the token or provided in the request body
