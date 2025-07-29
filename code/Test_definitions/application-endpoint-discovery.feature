@@ -16,10 +16,10 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
-    And the request body is set by default to a request body compliant with the schema
+    And the request body is compliant with the EndpointDiscoveryInfo defined by "#/components/schemas/EndpointDiscoveryInfo"
 #### Happy Path Scenarios #########
 
-  @application_endpoint_discovery.01_success_appid
+  @application_endpoint_discovery_success_scenario_01_appid
   Scenario: Successful retrieval of the optimal application endpoint for a given device and application
     Given a valid testing device supported by the service, identified by the token or provided in the request body
     And the testing device is connected to a mobile network
@@ -30,10 +30,10 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
-    And the EndpointDiscoveryResult parameter has an array of one "applicationEndpoints"
+    And the response body complies with the schema defined by "#/components/schemas/EndpointDiscoveryResult"
+    And the EndpointDiscoveryResult parameter has an array of one "applicationEndpoints" with the schema defined by "#/components/schemas/ApplicationEndpoint"
 
-  @application_endpoint_discovery.02_success_applicationEndpointsId
+  @application_endpoint_discovery_success_scenario_02_applicationEndpointsId
   Scenario: Successful retrieval of the optimal application endpoint for a given device and applicationEndpointsId
     Given a valid testing device supported by the service, identified by the token or provided in the request body
     And the testing device is connected to a mobile network
@@ -44,10 +44,10 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
-    And the EndpointDiscoveryResult parameter has an array of one "applicationEndpoints"
+    And the response body complies with the schema defined by "#/components/schemas/EndpointDiscoveryResult"
+    And the EndpointDiscoveryResult parameter has an array of one "applicationEndpoints" with the schema defined by "#/components/schemas/ApplicationEndpoint"
 
-  @application_endpoint_discovery.03_success_appid_multiple_endpoints
+  @application_endpoint_discovery_success_scenario_03_appid_multiple_endpoints
   Scenario: Successful retrieval of multiple optimal application endpoints for a given device and application
     Given a valid testing device supported by the service, identified by the token or provided in the request body
     And the testing device is connected to a mobile network
@@ -58,10 +58,10 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
-    And the EndpointDiscoveryResult parameter has an array of two "applicationEndpoints"
+    And the response body complies with the schema defined by "#/components/schemas/EndpointDiscoveryResult"
+    And the EndpointDiscoveryResult parameter has an array of one "applicationEndpoints" with the schema defined by "#/components/schemas/ApplicationEndpoint"
 
-  @application_endpoint_discovery.04_success_multiple_device_identifiers
+  @application_endpoint_discovery_success_scenario_04_multiple_device_identifiers
   Scenario: Successful retrieval of the optimal application endpoint for a given device that includes multiple identifiers
     Given a valid testing device supported by the service, identified by the token or provided in the request body
     And the testing device is connected to a mobile network
@@ -74,17 +74,26 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
-    And the EndpointDiscoveryResult parameter has an array of one "applicationEndpoints"
-    And the EndpointDiscoveryResult parameter has a "device" parameter indicating the device identifier used to obtain the optimal endpoint
+    And the response body complies with the schema defined by "#/components/schemas/EndpointDiscoveryResult"
+    And the EndpointDiscoveryResult parameter has an array of one "applicationEndpoints" with the schema defined by "#/components/schemas/ApplicationEndpoint"
+    And the EndpointDiscoveryResult parameter has a "device" parameter with the schema defined by "#/components/schemas/DeviceResponse"
 
 #### Error Scenarios      ###########
 #################
 # Error code 400
 #################
 
-  @application_endpoint_discovery_400.1_error_device_empty
-  Scenario: The device value is an empty object
+  @application_endpoint_discovery_400.1_no_request_body
+  Scenario: Missing request body
+    Given the request body is not included
+    When the HTTP POST request "getOptimalAppEndpoints" is sent
+    Then the response status code is 400
+    And the response property "$.status" is 400
+    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.message" contains a user friendly text
+
+  @application_endpoint_discovery_400.2_error_device_empty
+  Scenario: The device value is an empty object with 2-legs authentication
     Given the header "Authorization" is set to a valid access token which does not identify a single device
     And the request body property "$.device" is set to: {}
     When the HTTP POST request "getOptimalAppEndpoints" is sent
@@ -93,24 +102,17 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
-  @application_endpoint_discovery_400.2_error_device_identifiers_not_schema_compliant
-  Scenario Outline: Some device identifier value does not comply with the schema
+  @application_endpoint_discovery_400.3_error_phone_number_not_schema_compliant
+  Scenario: Device identifier value does not comply with the schema (with 2-legs authentication)
     Given the header "Authorization" is set to a valid access token which does not identify a single device
-    And the request body property "<device_identifier>" does not comply with the OAS schema at "<oas_spec_schema>"
+    And the request body property "$.device.phoneNumber" does not comply with the schema defined by "/components/schemas/PhoneNumber"
     When the HTTP POST request "getOptimalAppEndpoints" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
     And the response property "$.code" is "INVALID_ARGUMENT"
     And the response property "$.message" contains a user friendly text
 
-    Examples:
-      | device_identifier                | oas_spec_schema                             |
-      | $.device.phoneNumber             | /components/schemas/PhoneNumber             |
-      | $.device.ipv4Address             | /components/schemas/DeviceIpv4Addr          |
-      | $.device.ipv6Address             | /components/schemas/SingleIpv6Addr          |
-      | $.device.networkAccessIdentifier | /components/schemas/NetworkAccessIdentifier |
-
-  @application_endpoint_discovery_400.3_error_app_empty
+  @application_endpoint_discovery_400.4_error_app_empty
   Scenario: The appId and applicationEndpointsId parameters are not included in RequestBody
     Given the header "Authorization" is set to a valid access token which does not identify a single device
     And the request body does not include property "$.appId"
@@ -125,7 +127,7 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
 #################
 
   @application_endpoint_discovery_401.1_expired_access_token
-  Scenario: Expired access token
+  Scenario: Endpoint invoked with an invalid authentication token
     Given the header "Authorization" is set to an expired access token
     And the request body is set to a valid request body
     When the HTTP POST request "getOptimalAppEndpoints" is sent
@@ -158,9 +160,9 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
 # Error code 403
 #################
 
-  @application_endpoint_discovery_403.1_error_permissions_denied
-  Scenario: Client does not have sufficient permissions to perform this action
-    Given header "Authorization" set to an access token not including scope "application-endpoint-discovery:app-endpoints:read"
+  @application_endpoint_discovery_403_error_permission_denied
+  Scenario: Endpoint invoked with an authentication token not valid for the endpoint context
+    Given header "Authorization" set to an access token not including the scope "application-endpoint-discovery:app-endpoints:read"
     And the request body is set to a valid request body
     When the HTTP POST request "getOptimalAppEndpoints" is sent
     Then the response status code is 403
@@ -174,7 +176,7 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
   @application_endpoint_discovery_404.1_error_device_not_found
   Scenario: Some identifier cannot be matched to a device
     Given the header "Authorization" is set to a valid access token which does not identify a single device
-    And the request body property "$.device" is compliant with the schema but does not identify a valid device
+    And the request body property "$.device" is compliant with the schema but it cannot be mathed to a registered device
     When the HTTP POST request "getOptimalAppEndpoints" is sent
     Then the response status code is 404
     And the response property "$.status" is 404
@@ -184,7 +186,7 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
   @application_endpoint_discovery_404.2_error_application_not_found
   Scenario: Some identifier cannot be matched to an application
     Given the header "Authorization" is set to a valid access token which does not identify a single device
-    And the request body property "$.appId" is compliant with the schema but does not identify a valid application
+    And the request body property "$.appId" is compliant with the schema but it does not identify a valid application
     When the HTTP POST request "getOptimalAppEndpoints" is sent
     Then the response status code is 404
     And the response property "$.status" is 404
