@@ -32,9 +32,9 @@ The API definition(s) are based on
 ## application-endpoint-discovery v0.1.0
 
 - API definition **with inline documentation**:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.1/code/API_definitions/application-endpoint-discovery.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.1/code/API_definitions/application-endpoint-discovery.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r1.1/code/API_definitions/application-endpoint-discovery.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.2/code/API_definitions/application-endpoint-discovery.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.2/code/API_definitions/application-endpoint-discovery.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r1.2/code/API_definitions/application-endpoint-discovery.yaml)
 
 **NOTE: there is no significant changes compared to r1.1-rc version .**
 
