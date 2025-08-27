@@ -2,8 +2,8 @@
 
 ## Table of contents
 
+- **[r1.2](#r12) (Fall25 public release)**
 - **[r1.1 - rc](#r11---rc)**
--  **[r1.2](#r12)**
 
 **Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until it has been released. For example, changes may be reverted before a release is published. For the best results, use the latest published release.**
 
