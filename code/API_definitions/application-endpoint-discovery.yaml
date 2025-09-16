@@ -2,7 +2,7 @@
 openapi: 3.0.3
 info:
   title: Application Endpoint Discovery
-  version: wip
+  version: 0.1.0
   description: |
     The Application Endpoint Discovery API returns the optimal application
     endpoint(s) that a given end-user's device can connect to.
@@ -224,7 +224,7 @@ externalDocs:
   description: Product documentation at CAMARA
   url: https://github.com/camaraproject/ApplicationEndpointDiscovery
 servers:
-  - url: "{apiRoot}/application-endpoint-discovery/vwip"
+  - url: "{apiRoot}/application-endpoint-discovery/v0.1"
     variables:
       apiRoot:
         default: http://localhost:9091

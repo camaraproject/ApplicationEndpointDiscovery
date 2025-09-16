@@ -1,3 +1,4 @@
+
 <a href="https://github.com/camaraproject/ApplicationEndpointDiscovery/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/camaraproject/ApplicationEndpointDiscovery?style=plastic"></a>
 <a href="https://github.com/camaraproject/ApplicationEndpointDiscovery/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/camaraproject/ApplicationEndpointDiscovery?style=plastic"></a>
 <a href="https://github.com/camaraproject/ApplicationEndpointDiscovery/pulls" title="Open Pull Requests"><img src="https://img.shields.io/github/issues-pr/camaraproject/ApplicationEndpointDiscovery?style=plastic"></a>
@@ -26,7 +27,12 @@ Sandbox API Repository to describe, develop, document, and test the ApplicationE
 
 <!-- Optional: an explicit listing of the latest (pre-)release with additional information, e.g. links to the API definitions -->
 <!-- In addition use/uncomment one or multiple the following alternative options when becoming applicable -->
-**NEW**: First pre-release [r1.1](https://github.com/camaraproject/ApplicationEndpointDiscovery/releases/tag/r1.1) with application-endpoint-discovery v0.1.0-rc.1 is available.
+**NEW**: First public release [r1.2](https://github.com/camaraproject/ApplicationEndpointDiscovery/releases/tag/r1.2) with application-endpoint-discovery v0.1.0 is available.
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.2/code/API_definitions/application-endpoint-discovery.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r1.2/code/API_definitions/application-endpoint-discovery.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r1.2/code/API_definitions/application-endpoint-discovery.yaml)
 
 Pre-releases of this sub project are available in https://github.com/camaraproject/ApplicationEndpointDiscovery/releases
 <!-- The latest public release is available here: https://github.com/camaraproject/ApplicationEndpointDiscovery/releases/latest -->
