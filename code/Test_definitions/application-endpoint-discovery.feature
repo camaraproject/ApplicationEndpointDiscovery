@@ -1,5 +1,5 @@
   @application_endpoint_discovery
-Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptimalAppEndpoints
+Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalAppEndpoints
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -12,7 +12,7 @@ Feature: CAMARA Application Endpoint Discovery API, v0.1.0 - Operation getOptima
 
   Background:
     Given an environment at "apiRoot"
-    And the resource "/application-endpoint-discovery/v0.1/retrieve-optimal-app-endpoints"                                                     |
+    And the resource "/application-endpoint-discovery/vwip/retrieve-optimal-app-endpoints"                                                     |
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
