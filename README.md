@@ -1,4 +1,3 @@
-
 <a href="https://github.com/camaraproject/ApplicationEndpointDiscovery/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/camaraproject/ApplicationEndpointDiscovery?style=plastic"></a>
 <a href="https://github.com/camaraproject/ApplicationEndpointDiscovery/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/camaraproject/ApplicationEndpointDiscovery?style=plastic"></a>
 <a href="https://github.com/camaraproject/ApplicationEndpointDiscovery/pulls" title="Open Pull Requests"><img src="https://img.shields.io/github/issues-pr/camaraproject/ApplicationEndpointDiscovery?style=plastic"></a>
