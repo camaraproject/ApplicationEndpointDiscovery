@@ -76,7 +76,11 @@ Changes documented below are compared to version 0.1.0.
 
 ### Changed
 
-* N/A
+* Aligned the API with CAMARA Commonalities r4.3 (0.8.0) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
+  * Common definitions reused via `$ref` into `CAMARA_common.yaml` (`openId`, `x-correlator`, `Device`, `DeviceResponse`, `ErrorInfo`, and all generic error responses)
+  * Added the mandatory `info.description` sections (authorization and authentication, additional error responses, request body strictness, identifying device from access token)
+  * Added `maxLength`, `format` and `pattern` constraints to string fields including `Fqdn`, `Ipv4Address`, `Ipv6Address`, and description/name fields
+  * Added `maxItems: 50` to the `applicationEndpoints` response array; `maxItems: 1` to `ipv4Addresses` and `ipv6Addresses` (one address per endpoint)
 
 ### Fixed
 
