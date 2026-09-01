@@ -276,7 +276,8 @@ components:
             See the "Identifying the device from the access token" section
             in the API description for rules on when this field MUST or
             MUST NOT be provided.
-          $ref: "../common/CAMARA_common.yaml#/components/schemas/Device"
+          allOf:
+            - $ref: "../common/CAMARA_common.yaml#/components/schemas/Device"
         applicationEndpointsId:
           $ref: "#/components/schemas/ApplicationEndpointsId"
         appId:
@@ -342,7 +343,8 @@ components:
             A unique identifier for the application profile associated with
             the returned endpoints. If absent, no Application Profile is
             associated with the returned endpoints.
-          $ref: "#/components/schemas/ApplicationProfileId"
+          allOf:
+            - $ref: "#/components/schemas/ApplicationProfileId"
         device:
           $ref: "../common/CAMARA_common.yaml#/components/schemas/DeviceResponse"
 
@@ -453,7 +455,8 @@ components:
             Identifies the Edge Cloud Zone where this application endpoint is
             deployed. If absent, the API provider does not expose Edge Cloud
             Zone information for this endpoint.
-          $ref: "#/components/schemas/EdgeCloudZone"
+          allOf:
+            - $ref: "#/components/schemas/EdgeCloudZone"
         applicationEndpointDescription:
           type: string
           maxLength: 2048
