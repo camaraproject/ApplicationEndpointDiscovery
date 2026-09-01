@@ -79,8 +79,7 @@ info:
       - `applicationEndpointsId:` A unique identifier for a group of registered
     application endpoints belonging to the same application. It is used when
     available endpoints have been registered by the Edge Application Registration
-    API, regardless of whether the application was also onboarded via the Edge
-    Application Management API.
+    API.
 
     ## Outputs
 
