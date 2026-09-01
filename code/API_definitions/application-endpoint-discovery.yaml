@@ -63,25 +63,24 @@ info:
     ## Inputs
 
     The endpoint request body is a JSON object with the following parameters:
-    - `device:` End-user equipment able to connect to a mobile network. The
-    developer can choose to provide the below specified device identifiers:
-      - `ipv4Address:` Public IP address (IPv4) of the user device, which can be
-      fetched via external IP discovery services.
-      - `ipv6Address:` Public IP address (IPv6) of the user device, which can be
-      fetched via external IP discovery services.
-      - `phoneNumber:` The device's phone number in international E.164 format.
-      - `networkAccessIdentifier:` A unique identifier provided by the network
-    operator (where supported).
-    - One of the following application identifiers:
+    - `device:` End-user equipment able to connect to a mobile network.
+    See the "Identifying the device from the access token" section for
+    rules on when this field MUST or MUST NOT be provided.
+    - At least one of the following application identifiers MUST be provided.
+    Both MAY be provided together when the application has been onboarded via
+    the Edge Application Management API (`appId`) and its endpoints have also
+    been registered via the Application Endpoint Registration API
+    (`applicationEndpointsId`). When both are provided, the server validates
+    that the `applicationEndpointsId` is associated with the application
+    identified by `appId` and uses it to scope the endpoint search.
       - `appId:` A unique identifier for an application onboarded on the Edge
     Cloud. It is used when the application has been onboarded using the Edge
     Application Management API.
-      - `applicationEndpointsId:` A unique identifier for the registered
-    application endpoint(s). It is used when the application has not been onboarded
-    using the Edge Application Management API, and available endpoints have been
-    registered by the Edge Application Registration API. Every endpoint registered
-    under the same `applicationEndpointsId` identifier belongs to the same
-    application.
+      - `applicationEndpointsId:` A unique identifier for a group of registered
+    application endpoints belonging to the same application. It is used when
+    available endpoints have been registered by the Edge Application Registration
+    API, regardless of whether the application was also onboarded via the Edge
+    Application Management API.
 
     ## Outputs
 
@@ -103,19 +102,11 @@ info:
       the application endpoint belongs to, including: `edgeCloudZoneId`,
       `edgeCloudZoneName`, `edgeCloudZoneStatus`, `edgeCloudRegion`, and
       `edgeCloudProvider`.
-    - One of the following application identifiers (the one provided on the request)
-      - `appId:` A unique identifier for an application onboarded on the Edge
-      Cloud. It is used when the application has been onboarded using the Edge
-      Application Management API.
-      - `applicationEndpointsId:` A unique identifier for the registered
-      application endpoint(s). It is used when the application has not been onboarded
-      using the Edge Application Management API, and available endpoints have been
-      registered by the Edge Application Registration API. Every endpoint
-      registered under the same `applicationEndpointsId` identifier belongs to
-      the same application.
+    - The application identifier(s) echoed from the request: `appId`,
+      `applicationEndpointsId`, or both if both were provided in the request.
     - `applicationServerProviderName:` Optionally, the Application Provider
     identifier
-    - `applicationProfileId:` Optionally, the Application Profile identifier
+    - `applicationProfileId:` Optionally, the Application Profile identifier associated with the returned endpoints.
     - `device`: End-user equipment identifier used to obtain the optimal application
       endpoint. It is only included when multiple device identifiers come in the
       request.
@@ -124,6 +115,11 @@ info:
 
     - If the API call contains a formatting or other any other syntatic error,
     a `400 INVALID_ARGUMENT` error is returned.
+    - If the API call body contains neither `appId` nor `applicationEndpointsId`,
+    a `400 INVALID_ARGUMENT` error is returned.
+    - If the API call body contains both `appId` and `applicationEndpointsId`
+    but the `applicationEndpointsId` is not associated with the provided `appId`,
+    a `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH` error is returned.
     - If the API call cannot be authenticated due to missing, invalid, or
     expired credentials, a `401 UNAUTHENTICATED` error is returned.
     - If the API call has a valid access token that does not have the
@@ -265,13 +261,21 @@ components:
     EndpointDiscoveryInfo:
       description: |
         Element to retrieve the optimal application endpoint(s) for the
-        identified device.
+        identified device. At least one of `appId` or `applicationEndpointsId`
+        MUST be provided. Both MAY be provided together; when they are, the
+        server validates that the `applicationEndpointsId` is associated with
+        the application identified by `appId`.
       type: object
       anyOf:
         - required: [applicationEndpointsId]
         - required: [appId]
       properties:
         device:
+          description: |
+            End-user equipment able to connect to a mobile network.
+            See the "Identifying the device from the access token" section
+            in the API description for rules on when this field MUST or
+            MUST NOT be provided.
           $ref: "../common/CAMARA_common.yaml#/components/schemas/Device"
         applicationEndpointsId:
           $ref: "#/components/schemas/ApplicationEndpointsId"
@@ -310,7 +314,12 @@ components:
         - required: [appId]
       properties:
         applicationEndpoints:
-          description: Array of optimal Application Endpoints for the identified device.
+          description: |
+            Array of optimal Application Endpoints for the identified device.
+            When multiple endpoints are returned, they are ordered by optimality
+            in descending order: the first entry is the most optimal endpoint
+            (shortest network path from the identified device). All returned
+            endpoints represent currently available application instances.
           type: array
           maxItems: 50
           minItems: 1
@@ -324,8 +333,15 @@ components:
           type: string
           maxLength: 256
           pattern: ^[^\r\n]*$
-          description: Unique ID representing the Edge Application Provider
+          description: |
+            Unique ID representing the Edge Application Provider.
+            If absent, the API provider does not expose the Application Provider
+            identifier for this response.
         applicationProfileId:
+          description: |
+            A unique identifier for the application profile associated with
+            the returned endpoints. If absent, no Application Profile is
+            associated with the returned endpoints.
           $ref: "#/components/schemas/ApplicationProfileId"
         device:
           $ref: "../common/CAMARA_common.yaml#/components/schemas/DeviceResponse"
@@ -342,6 +358,7 @@ components:
         - edgeCloudZoneId
         - edgeCloudZoneName
         - edgeCloudProvider
+        - edgeCloudZoneStatus
       properties:
         edgeCloudZoneId:
           $ref: "#/components/schemas/EdgeCloudZoneId"
@@ -364,20 +381,20 @@ components:
     EdgeCloudRegion:
       description: |
         The EdgeCloudProvider's name for the region where the Edge Cloud
-        Zone is located.
+        Zone is located. If absent, the Edge Cloud Zone is not associated
+        with a named region by this provider.
       type: string
       maxLength: 64
       pattern: ^[A-Za-z0-9]([A-Za-z0-9-]{0,53}[A-Za-z0-9])?$
       example: "us-west-1"
 
     EdgeCloudZoneStatus:
-      description: Status of the Edge Cloud Zone (default is 'unknown')
+      description: Status of the Edge Cloud Zone.
       type: string
       enum:
         - active
         - inactive
         - unknown
-      default: unknown
 
     EdgeCloudProvider:
       description: The provider of the Edge Cloud.
@@ -432,12 +449,18 @@ components:
         port:
           $ref: "../common/CAMARA_common.yaml#/components/schemas/Port"
         edgeCloudZone:
+          description: |
+            Identifies the Edge Cloud Zone where this application endpoint is
+            deployed. If absent, the API provider does not expose Edge Cloud
+            Zone information for this endpoint.
           $ref: "#/components/schemas/EdgeCloudZone"
         applicationEndpointDescription:
           type: string
           maxLength: 2048
           pattern: ^[^\r\n]*$
-          description: Description of the application endpoint
+          description: |
+            Description of the application endpoint.
+            If absent, no description is available for this endpoint.
 
     Fqdn:
       type: string
@@ -464,15 +487,140 @@ components:
 
   responses:
     Generic400:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic400"
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: "Client specified an invalid argument, request body or query param."
+            GENERIC_400_MISSING_APP_IDENTIFIER:
+              description: Neither appId nor applicationEndpointsId is provided. Exactly one must be present.
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: "One of appId or applicationEndpointsId must be provided."
     Generic401:
       $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
     Generic403:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic403"
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: "Client does not have sufficient permissions to perform this action."
     Generic404:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic404"
+      description: Not Found
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 404
+                  code:
+                    enum:
+                      - NOT_FOUND
+                      - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND_APP_ID:
+              description: The provided appId does not identify a valid application on the Edge Cloud
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: "No application found for the provided appId."
+            GENERIC_404_NOT_FOUND_APP_ENDPOINTS_ID:
+              description: The provided applicationEndpointsId does not identify any registered endpoint on the Edge Cloud
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: "No registered endpoints found for the provided applicationEndpointsId."
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: The device identifier provided in the request cannot be matched to a device on the network
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: "Device identifier not found."
     Generic422:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic422"
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - MISSING_IDENTIFIER
+                      - UNNECESSARY_IDENTIFIER
+                      - APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH
+          examples:
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device identification cannot be derived from the access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: "The device cannot be identified."
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit device identifier is provided when the device has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: "The device is already identified by the access token."
+            APPLICATION_ENDPOINT_DISCOVERY_422_IDENTIFIER_MISMATCH:
+              description: Both appId and applicationEndpointsId are provided but the applicationEndpointsId is not associated with the application identified by appId
+              value:
+                status: 422
+                code: APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH
+                message: "The provided applicationEndpointsId is not associated with the provided appId."
     Generic429:
       $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
 
