@@ -1,9 +1,8 @@
----
 openapi: 3.0.3
 info:
   title: Application Endpoint Discovery
-  version: wip
-  x-camara-commonalities: wip
+  version: 0.2.0-rc.1
+  x-camara-commonalities: 0.8.0
   description: |
     The Application Endpoint Discovery API returns the optimal application
     endpoint(s) that a given end-user's device can connect to.
@@ -172,24 +171,22 @@ info:
 
     This API rejects requests with JSON request bodies that contain properties not declared in this specification, at any nesting level. Unknown properties result in a `400 INVALID_ARGUMENT` response.
     <!-- CAMARA:MANDATORY:request-body-strictness:END -->
-
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-externalDocs:
-  description: Product documentation at CAMARA
-  url: https://github.com/camaraproject/ApplicationEndpointDiscovery
 servers:
-  - url: "{apiRoot}/application-endpoint-discovery/vwip"
+  - url: '{apiRoot}/application-endpoint-discovery/v0.2rc1'
     variables:
       apiRoot:
         default: http://localhost:9091
         description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
-
 tags:
   - name: Application Endpoint Discovery
     description: |
       Find the optimal Application Instance Endpoint(s) to the user device.
+externalDocs:
+  description: Product documentation at CAMARA
+  url: https://github.com/camaraproject/ApplicationEndpointDiscovery
 paths:
   /retrieve-optimal-app-endpoints:
     post:
@@ -198,12 +195,12 @@ paths:
             - application-endpoint-discovery:app-endpoints:read
       operationId: getOptimalAppEndpoints
       parameters:
-        - $ref: "#/components/parameters/x-correlator"
+        - $ref: '#/components/parameters/x-correlator'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EndpointDiscoveryInfo"
+              $ref: '#/components/schemas/EndpointDiscoveryInfo'
             examples:
               Identify Device By 3-Legged Access Token and AppId:
                 $ref: '#/components/examples/IdentifyDeviceBy3LeggedTokenAppId'
@@ -214,29 +211,29 @@ paths:
               Identify Device By Multiple Identifiers and AppId:
                 $ref: '#/components/examples/IdentifyDeviceByMultipleIdentifiersAppId'
       responses:
-        "200":
+        '200':
           description: |
-           Successful response, returning the optimal Application Instance
-           Endpoint(s) to the user device identified in the request body.
+            Successful response, returning the optimal Application Instance
+            Endpoint(s) to the user device identified in the request body.
           headers:
             x-correlator:
-              $ref: "#/components/headers/x-correlator"
+              $ref: '#/components/headers/x-correlator'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EndpointDiscoveryResult"
-        "400":
-          $ref: "#/components/responses/Generic400"
-        "401":
-          $ref: "#/components/responses/Generic401"
-        "403":
-          $ref: "#/components/responses/Generic403"
-        "404":
-          $ref: "#/components/responses/Generic404"
-        "422":
-          $ref: "#/components/responses/Generic422"
-        "429":
-          $ref: "#/components/responses/Generic429"
+                $ref: '#/components/schemas/EndpointDiscoveryResult'
+        '400':
+          $ref: '#/components/responses/Generic400'
+        '401':
+          $ref: '#/components/responses/Generic401'
+        '403':
+          $ref: '#/components/responses/Generic403'
+        '404':
+          $ref: '#/components/responses/Generic404'
+        '422':
+          $ref: '#/components/responses/Generic422'
+        '429':
+          $ref: '#/components/responses/Generic429'
       tags:
         - Application Endpoint Discovery
       summary: |
@@ -249,13 +246,21 @@ paths:
 components:
   securitySchemes:
     openId:
-      $ref: "../common/CAMARA_common.yaml#/components/securitySchemes/openId"
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+      description: OpenID Connect authentication via discovery metadata.
   headers:
     x-correlator:
-      $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
   parameters:
     x-correlator:
-      $ref: "../common/CAMARA_common.yaml#/components/parameters/x-correlator"
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator'
   schemas:
     EndpointDiscoveryInfo:
       description: |
@@ -266,8 +271,10 @@ components:
         the application identified by `appId`.
       type: object
       anyOf:
-        - required: [applicationEndpointsId]
-        - required: [appId]
+        - required:
+            - applicationEndpointsId
+        - required:
+            - appId
       properties:
         device:
           description: |
@@ -276,12 +283,11 @@ components:
             in the API description for rules on when this field MUST or
             MUST NOT be provided.
           allOf:
-            - $ref: "../common/CAMARA_common.yaml#/components/schemas/Device"
+            - $ref: '#/components/schemas/Device'
         applicationEndpointsId:
-          $ref: "#/components/schemas/ApplicationEndpointsId"
+          $ref: '#/components/schemas/ApplicationEndpointsId'
         appId:
-          $ref: "#/components/schemas/AppId"
-
+          $ref: '#/components/schemas/AppId'
     ApplicationEndpointsId:
       description: |
         A system-defined string identifier representing
@@ -290,8 +296,7 @@ components:
       type: string
       format: uuid
       maxLength: 36
-      example: "4d596ac1-7822-4927-a3c5-d72e1f922c94"
-
+      example: 4d596ac1-7822-4927-a3c5-d72e1f922c94
     AppId:
       type: string
       format: uuid
@@ -300,8 +305,7 @@ components:
         A globally unique identifier associated with the application.
         This GUID will have been previously provided by the Edge Cloud Zone
         provider.
-      example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
     EndpointDiscoveryResult:
       description: |
         Endpoint Discovery result including optimal application endpoint(s)
@@ -310,8 +314,10 @@ components:
       required:
         - applicationEndpoints
       anyOf:
-        - required: [applicationEndpointsId]
-        - required: [appId]
+        - required:
+            - applicationEndpointsId
+        - required:
+            - appId
       properties:
         applicationEndpoints:
           description: |
@@ -324,11 +330,11 @@ components:
           maxItems: 50
           minItems: 1
           items:
-            $ref: "#/components/schemas/ApplicationEndpoint"
+            $ref: '#/components/schemas/ApplicationEndpoint'
         appId:
-          $ref: "#/components/schemas/AppId"
+          $ref: '#/components/schemas/AppId'
         applicationEndpointsId:
-          $ref: "#/components/schemas/ApplicationEndpointsId"
+          $ref: '#/components/schemas/ApplicationEndpointsId'
         applicationServerProviderName:
           type: string
           maxLength: 256
@@ -343,10 +349,9 @@ components:
             the returned endpoints. If absent, no Application Profile is
             associated with the returned endpoints.
           allOf:
-            - $ref: "#/components/schemas/ApplicationProfileId"
+            - $ref: '#/components/schemas/ApplicationProfileId'
         device:
-          $ref: "../common/CAMARA_common.yaml#/components/schemas/DeviceResponse"
-
+          $ref: '#/components/schemas/DeviceResponse'
     EdgeCloudZone:
       type: object
       description: |
@@ -362,23 +367,21 @@ components:
         - edgeCloudZoneStatus
       properties:
         edgeCloudZoneId:
-          $ref: "#/components/schemas/EdgeCloudZoneId"
+          $ref: '#/components/schemas/EdgeCloudZoneId'
         edgeCloudZoneName:
-          $ref: "#/components/schemas/EdgeCloudZoneName"
+          $ref: '#/components/schemas/EdgeCloudZoneName'
         edgeCloudZoneStatus:
-          $ref: "#/components/schemas/EdgeCloudZoneStatus"
+          $ref: '#/components/schemas/EdgeCloudZoneStatus'
         edgeCloudProvider:
-          $ref: "#/components/schemas/EdgeCloudProvider"
+          $ref: '#/components/schemas/EdgeCloudProvider'
         edgeCloudRegion:
-          $ref: "#/components/schemas/EdgeCloudRegion"
-
+          $ref: '#/components/schemas/EdgeCloudRegion'
     EdgeCloudZoneId:
       description: A unique identifier for the Edge Cloud Zone.
       type: string
       format: uuid
       maxLength: 36
-      example: "123e4567-e89b-12d3-a456-426614174000"
-
+      example: 123e4567-e89b-12d3-a456-426614174000
     EdgeCloudRegion:
       description: |
         The EdgeCloudProvider's name for the region where the Edge Cloud
@@ -387,8 +390,7 @@ components:
       type: string
       maxLength: 64
       pattern: ^[A-Za-z0-9]([A-Za-z0-9-]{0,53}[A-Za-z0-9])?$
-      example: "us-west-1"
-
+      example: us-west-1
     EdgeCloudZoneStatus:
       description: Status of the Edge Cloud Zone.
       type: string
@@ -396,28 +398,24 @@ components:
         - active
         - inactive
         - unknown
-
     EdgeCloudProvider:
       description: The provider of the Edge Cloud.
       type: string
       maxLength: 64
       pattern: ^[A-Za-z0-9]([A-Za-z0-9-]{0,53}[A-Za-z0-9])?$
-      example: "ProviderA"
-
+      example: ProviderA
     EdgeCloudZoneName:
       description: The name of the Edge Cloud Zone.
       type: string
       maxLength: 64
       pattern: ^[A-Za-z0-9]([A-Za-z0-9-]{0,53}[A-Za-z0-9])?$
-      example: "ZoneA"
-
+      example: ZoneA
     ApplicationProfileId:
       description: A unique identifier for the application profile.
       type: string
       format: uuid
       maxLength: 36
-      example: "123e4567-e89b-12d3-a456-426614174000"
-
+      example: 123e4567-e89b-12d3-a456-426614174000
     ApplicationEndpoint:
       type: object
       description: |
@@ -427,35 +425,38 @@ components:
       required:
         - port
       anyOf:
-        - required: [fqdn]
-        - required: [ipv4Addresses]
-        - required: [ipv6Addresses]
+        - required:
+            - fqdn
+        - required:
+            - ipv4Addresses
+        - required:
+            - ipv6Addresses
       properties:
         fqdn:
-          $ref: "#/components/schemas/Fqdn"
+          $ref: '#/components/schemas/Fqdn'
         ipv4Addresses:
           description: Array of IPv4 addresses exposed by the application instance.
           type: array
           maxItems: 1
           minItems: 1
           items:
-            $ref: "#/components/schemas/Ipv4Address"
+            $ref: '#/components/schemas/Ipv4Address'
         ipv6Addresses:
           description: Array of IPv6 addresses exposed by the application instance.
           type: array
           maxItems: 1
           minItems: 1
           items:
-            $ref: "#/components/schemas/Ipv6Address"
+            $ref: '#/components/schemas/Ipv6Address'
         port:
-          $ref: "../common/CAMARA_common.yaml#/components/schemas/Port"
+          $ref: '#/components/schemas/Port'
         edgeCloudZone:
           description: |
             Identifies the Edge Cloud Zone where this application endpoint is
             deployed. If absent, the API provider does not expose Edge Cloud
             Zone information for this endpoint.
           allOf:
-            - $ref: "#/components/schemas/EdgeCloudZone"
+            - $ref: '#/components/schemas/EdgeCloudZone'
         applicationEndpointDescription:
           type: string
           maxLength: 2048
@@ -463,21 +464,18 @@ components:
           description: |
             Description of the application endpoint.
             If absent, no description is available for this endpoint.
-
     Fqdn:
       type: string
       maxLength: 253
       pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)+$
       description: Fully Qualified Domain Name.
-
     Ipv4Address:
       type: string
       format: ipv4
       maxLength: 15
       description: |
         A single IPv4 address specified in dotted-quad form like 1.2.3.4.
-      example: "198.51.100.1"
-
+      example: 198.51.100.1
     Ipv6Address:
       type: string
       format: ipv6
@@ -485,19 +483,132 @@ components:
       description: |
         A single IPv6 address, following IETF 5952 format like
         2001:db8:85a3:8d3:1319:8a2e:370:7344.
-      example: "2001:db8:85a3::8a2e:370:7334"
+      example: 2001:db8:85a3::8a2e:370:7334
+    XCorrelator:
+      type: string
+      description: Correlator string, UUID format recommended but any string matching the pattern can be used
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      maxLength: 256
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      maxLength: 16
+      example: '+123456789'
+    NetworkAccessIdentifier:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      maxLength: 2048
+      example: 123456789@example.com
+    SingleIpv4Address:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      maxLength: 15
+      example: 84.125.93.10
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 65535
+    DeviceIpv4Address:
+      type: object
+      description: |
+        The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
 
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Address'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Address'
+        publicPort:
+          $ref: '#/components/schemas/Port'
+      anyOf:
+        - required:
+            - publicAddress
+            - privateAddress
+        - required:
+            - publicAddress
+            - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    DeviceIpv6Address:
+      description: |
+        The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+      type: string
+      format: ipv6
+      maxLength: 45
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    Device:
+      description: |
+        End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+            The developer can choose to provide the below specified device identifiers:
+            * `ipv4Address`
+            * `ipv6Address`
+            * `phoneNumber`
+            * `networkAccessIdentifier`
+            NOTE1: the network operator might support only a subset of these options. The API Consumer can provide multiple identifiers to ensure compatibility across different network operators. In this case, the API Provider will use one of the identifiers for the API logic without performing any matching checks among the provided identifiers.
+            NOTE2: as for this Commonalities release, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Address'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address'
+      minProperties: 1
+    DeviceResponse:
+      description: |
+        An identifier for the end-user equipment able to connect to the network that the response refers to. This parameter is only returned when the API consumer includes the `device` parameter in their request (i.e. they are using a two-legged access token), and is relevant when more than one device identifier is specified, as only one of those device identifiers is allowed in the response.
+
+        If the API consumer provides more than one device identifier in their request, and this schema is included in the response definition, the API provider MUST use it to return a single identifier which is the one they are using to fulfil the request, even if the identifiers do not match the same device. API provider does not perform any logic to validate/correlate that the indicated device identifiers match the same device. No error should be returned if the identifiers are otherwise valid to prevent API consumers correlating different identifiers with a given end user.
+      allOf:
+        - $ref: '#/components/schemas/Device'
+        - maxProperties: 1
+    ErrorInfo:
+      type: object
+      description: A structured error response providing details about a failed request, including the HTTP status code, an error code, and a human-readable message
+      required:
+        - status
+        - code
+        - message
+      properties:
+        status:
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 599
+          description: HTTP response status code
+        code:
+          type: string
+          maxLength: 96
+          description: A human-readable code to describe the error
+        message:
+          type: string
+          maxLength: 512
+          description: A human-readable description of what the event represents
   responses:
     Generic400:
       description: Bad Request
       headers:
         x-correlator:
-          $ref: "#/components/headers/x-correlator"
+          $ref: '#/components/headers/x-correlator'
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - $ref: '#/components/schemas/ErrorInfo'
               - type: object
                 properties:
                   status:
@@ -512,25 +623,48 @@ components:
               value:
                 status: 400
                 code: INVALID_ARGUMENT
-                message: "Client specified an invalid argument, request body or query param."
+                message: Client specified an invalid argument, request body or query param.
             GENERIC_400_MISSING_APP_IDENTIFIER:
               description: Neither appId nor applicationEndpointsId is provided. Exactly one must be present.
               value:
                 status: 400
                 code: INVALID_ARGUMENT
-                message: "One of appId or applicationEndpointsId must be provided."
+                message: One of appId or applicationEndpointsId must be provided.
     Generic401:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
-    Generic403:
-      description: Forbidden
+      description: Unauthorized
       headers:
         x-correlator:
-          $ref: "#/components/headers/x-correlator"
+          $ref: '#/components/headers/x-correlator'
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - $ref: '#/components/schemas/ErrorInfo'
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 401
+                  code:
+                    enum:
+                      - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorInfo'
               - type: object
                 properties:
                   status:
@@ -545,17 +679,17 @@ components:
               value:
                 status: 403
                 code: PERMISSION_DENIED
-                message: "Client does not have sufficient permissions to perform this action."
+                message: Client does not have sufficient permissions to perform this action.
     Generic404:
       description: Not Found
       headers:
         x-correlator:
-          $ref: "#/components/headers/x-correlator"
+          $ref: '#/components/headers/x-correlator'
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - $ref: '#/components/schemas/ErrorInfo'
               - type: object
                 properties:
                   status:
@@ -571,29 +705,29 @@ components:
               value:
                 status: 404
                 code: NOT_FOUND
-                message: "No application found for the provided appId."
+                message: No application found for the provided appId.
             GENERIC_404_NOT_FOUND_APP_ENDPOINTS_ID:
               description: The provided applicationEndpointsId does not identify any registered endpoint on the Edge Cloud
               value:
                 status: 404
                 code: NOT_FOUND
-                message: "No registered endpoints found for the provided applicationEndpointsId."
+                message: No registered endpoints found for the provided applicationEndpointsId.
             GENERIC_404_IDENTIFIER_NOT_FOUND:
               description: The device identifier provided in the request cannot be matched to a device on the network
               value:
                 status: 404
                 code: IDENTIFIER_NOT_FOUND
-                message: "Device identifier not found."
+                message: Device identifier not found.
     Generic422:
       description: Unprocessable Content
       headers:
         x-correlator:
-          $ref: "#/components/headers/x-correlator"
+          $ref: '#/components/headers/x-correlator'
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - $ref: '#/components/schemas/ErrorInfo'
               - type: object
                 properties:
                   status:
@@ -610,51 +744,77 @@ components:
               value:
                 status: 422
                 code: MISSING_IDENTIFIER
-                message: "The device cannot be identified."
+                message: The device cannot be identified.
             GENERIC_422_UNNECESSARY_IDENTIFIER:
               description: An explicit device identifier is provided when the device has already been identified from the access token
               value:
                 status: 422
                 code: UNNECESSARY_IDENTIFIER
-                message: "The device is already identified by the access token."
+                message: The device is already identified by the access token.
             APPLICATION_ENDPOINT_DISCOVERY_422_IDENTIFIER_MISMATCH:
               description: Both appId and applicationEndpointsId are provided but the applicationEndpointsId is not associated with the application identified by appId
               value:
                 status: 422
                 code: APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH
-                message: "The provided applicationEndpointsId is not associated with the provided appId."
+                message: The provided applicationEndpointsId is not associated with the provided appId.
     Generic429:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
-
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorInfo'
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 429
+                  code:
+                    enum:
+                      - QUOTA_EXCEEDED
+                      - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
   examples:
     IdentifyDeviceBy3LeggedTokenAppId:
       description: Empty JSON when device is identified by access token
       value:
-        appId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-
+        appId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
     IdentifyDeviceByPhoneNumberAppId:
       description: Identifying device by phone number
       value:
         device:
-          phoneNumber: "+123456789"
-        appId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-
+          phoneNumber: '+123456789'
+        appId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
     IdentifyDeviceByIPAddressAppEndpointsId:
       description: Identifying device by IP address
       value:
         device:
           ipv4Address:
-            publicAddress: "84.125.93.10"
+            publicAddress: 84.125.93.10
             publicPort: 59765
-        applicationEndpointsId: "4d596ac1-7822-4927-a3c5-d72e1f922c94"
-
+        applicationEndpointsId: 4d596ac1-7822-4927-a3c5-d72e1f922c94
     IdentifyDeviceByMultipleIdentifiersAppId:
       description: Identifying device by multiple device identifiers
       value:
         device:
-          phoneNumber: "+123456789"
+          phoneNumber: '+123456789'
           ipv4Address:
-            publicAddress: "84.125.93.10"
+            publicAddress: 84.125.93.10
             publicPort: 59765
-          networkAccessIdentifier: "123456789@domain.com"
-        appId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          networkAccessIdentifier: 123456789@domain.com
+        appId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
