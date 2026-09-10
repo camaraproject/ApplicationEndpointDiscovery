@@ -73,15 +73,27 @@ Changes documented below are compared to version 0.1.0.
 
 ### Added
 
-* N/A
+* Added API-specific `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH` error code, returned when both `appId` and `applicationEndpointsId` are provided but identify different applications by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
 
 ### Changed
 
-* N/A
+* Aligned the API with CAMARA Commonalities r4.3 (0.8.0) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
+  * Common definitions reused via `$ref` into `CAMARA_common.yaml` (`openId`, `x-correlator`, `Device`, `DeviceResponse`, `ErrorInfo`, and all generic error responses)
+  * Added mandatory `info.description` sections (authorization and authentication, additional error responses, request body strictness, identifying device from access token)
+  * Added `maxLength`, `format`, and `pattern` constraints to string fields including `Fqdn`, `Ipv4Address`, `Ipv6Address`, and description/name fields
+  * Added `maxItems: 50` to the `applicationEndpoints` response array; `maxItems: 1` to `ipv4Addresses` and `ipv6Addresses` (one address per endpoint)
+* `applicationEndpoints` array is now documented as ordered by optimality descending — the first entry is the most optimal endpoint by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* `edgeCloudZoneStatus` is now a required field in `EdgeCloudZone`; `default: unknown` removed — providers must always return an explicit status value by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Documented behavior when both `appId` and `applicationEndpointsId` are provided: consistent → `200 OK`; mismatched → `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH` by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Documented absence semantics for optional response fields (`edgeCloudZone`, `applicationEndpointDescription`, `edgeCloudRegion`, `applicationServerProviderName`, `applicationProfileId`) by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* `device` request property description updated to reference the "Identifying the device from the access token" section by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
 
 ### Fixed
 
-* N/A
+* Removed inapplicable `INVALID_TOKEN_CONTEXT` from `403` response by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed inapplicable `OUT_OF_RANGE` from `400` response (no range-checked input fields) by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed inapplicable `SERVICE_NOT_APPLICABLE` and `UNSUPPORTED_IDENTIFIER` from `422` response by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Added API-specific `404` examples for `appId` not found, `applicationEndpointsId` not found, and device identifier not found by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
 
 ### Removed
 
