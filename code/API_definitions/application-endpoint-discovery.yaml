@@ -89,10 +89,11 @@ info:
     - `applicationEndpoints:` An array containing at least one Application Endpoint
     object. Each Application Endpoint object includes the following parameters:
       - `port:` TCP or UDP port number exposed by the application instance.
-      - One of the following parameters which define the endpoint:
-        - `ipv4addresses:` Array of IPv4 addresses exposed by the application
+      - At least one of the following parameters which define the endpoint
+      (more than one MAY be present):
+        - `ipv4Addresses:` Array of IPv4 addresses exposed by the application
         instance.
-        - `ipv6addresses:` Array of IPv6 addresses exposed by the application
+        - `ipv6Addresses:` Array of IPv6 addresses exposed by the application
         instance.
         - `fqdn:` Fully Qualified Domain Name exposed by the application instance.
       - `applicationEndpointDescription:` Optionally, a string that describes the
@@ -112,7 +113,7 @@ info:
 
     ## Errors
 
-    - If the API call contains a formatting or other any other syntatic error,
+    - If the API call contains a formatting or any other syntactic error,
     a `400 INVALID_ARGUMENT` error is returned.
     - If the API call body contains neither `appId` nor `applicationEndpointsId`,
     a `400 INVALID_ARGUMENT` error is returned.
@@ -123,8 +124,13 @@ info:
     expired credentials, a `401 UNAUTHENTICATED` error is returned.
     - If the API call has a valid access token that does not have the
     required scope, then a `403 PERMISSION_DENIED` error is returned.
-    - If the API call has a valid access token that does not identify
-    a single device, then a `404 IDENTIFIER_NOT_FOUND` error is returned.
+    - If the `device` identifier provided in the request cannot be matched
+    to a device on the network, a `404 IDENTIFIER_NOT_FOUND` error is returned.
+    - If the device cannot be identified from the access token and no `device`
+    is provided, or if a `device` is provided when the access token already
+    identifies the device, a `422 MISSING_IDENTIFIER` or
+    `422 UNNECESSARY_IDENTIFIER` error is returned respectively. See the
+    "Identifying the device from the access token" section.
     - If the API call has an `appId` that does not identify a valid
     application on the Edge Cloud, a `404 NOT_FOUND` error is returned.
     - If the API call has an `applicationEndpointsId` that does not identify
@@ -514,11 +520,11 @@ components:
                 code: INVALID_ARGUMENT
                 message: "Client specified an invalid argument, request body or query param."
             GENERIC_400_MISSING_APP_IDENTIFIER:
-              description: Neither appId nor applicationEndpointsId is provided. Exactly one must be present.
+              description: Neither appId nor applicationEndpointsId is provided. At least one must be present.
               value:
                 status: 400
                 code: INVALID_ARGUMENT
-                message: "One of appId or applicationEndpointsId must be provided."
+                message: "At least one of appId or applicationEndpointsId must be provided."
     Generic401:
       $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
     Generic403:
