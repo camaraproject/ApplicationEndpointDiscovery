@@ -1,6 +1,6 @@
 # Application Endpoint Discovery API  User Story
 
-_This document is based on the [CAMARA Commonalities template for User Stories](https://github.com/camaraproject/Commonalities/blob/main/documentation/Userstory-template.md)_
+_This document is based on the [CAMARA Commonalities template for User Stories](https://github.com/camaraproject/Commonalities/blob/r4.3/documentation/Userstory-template.md)_
 
 | **Item** | **Details** |
 | ---- | ------- |
