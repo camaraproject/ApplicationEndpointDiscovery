@@ -1,0 +1,78 @@
+# Changelog ApplicationEndpointDiscovery
+
+<!-- TOC:START -->
+## Table of Contents
+- [r2.1](#r21)
+<!-- TOC:END -->
+
+**Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until it has been released. For example, changes may be reverted before a release is published. For the best results, use the latest published release.**
+
+The below sections record the changes for each API version in each release as follows:
+
+* for an alpha release, the delta with respect to the previous release
+* for the first release-candidate, all changes since the last public release
+* for subsequent release-candidate(s), only the delta to the previous release-candidate
+* for a public release, the consolidated changes since the previous public release
+
+# r2.1
+
+## Release Notes
+
+This release candidate contains the definition and documentation of
+* application-endpoint-discovery 0.2.0-rc.1
+
+The API definition(s) are based on
+* Commonalities r4.3 (0.8.0)
+* Identity and Consent Management r4.2 (0.5.0)
+
+## application-endpoint-discovery 0.2.0-rc.1
+
+**application-endpoint-discovery 0.2.0-rc.1 is a release-candidate version of this API.**
+
+Changes documented below are compared to version 0.1.0.
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.1/code/API_definitions/application-endpoint-discovery.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.1/code/API_definitions/application-endpoint-discovery.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r2.1/code/API_definitions/application-endpoint-discovery.yaml)
+
+### Breaking changes
+
+* Request bodies containing properties not declared in the API specification, at any nesting level, are now rejected with `400 INVALID_ARGUMENT` (Commonalities "Request body strictness" rule) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
+* `device.ipv4Address.publicPort` now requires a value between 1 and 65535 (previously 0 was accepted), inherited from the Commonalities `Port` schema by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
+
+### Added
+
+* Added API-specific `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH` error code, returned when both `appId` and `applicationEndpointsId` are provided but the `applicationEndpointsId` is not associated with the application identified by `appId` by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Added API-specific `404 NOT_FOUND` examples for `appId` not found and `applicationEndpointsId` not found by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Added test scenarios for `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH`, for `appId` and `applicationEndpointsId` provided together, for multiple endpoints ordered by optimality, and for `400 INVALID_ARGUMENT` on empty request body, non-schema-compliant application identifiers and invalid `x-correlator` by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
+
+### Changed
+
+* Aligned the API with CAMARA Commonalities r4.3 (0.8.0) and Identity and Consent Management r4.2 (0.5.0) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
+  * Common definitions reused via `$ref` into `CAMARA_common.yaml` (`openId`, `x-correlator`, `Device`, `DeviceResponse`, `ErrorInfo`, `Port`, and the generic `401` and `429` error responses)
+  * Added the mandatory `info.description` sections (authorization and authentication, additional error responses, request body strictness, identifying the device from the access token)
+  * Request bodies with undeclared properties are rejected with `400 INVALID_ARGUMENT` (see Breaking changes)
+  * `device.ipv4Address.publicPort` minimum raised from 0 to 1 (see Breaking changes)
+  * `Device` semantics follow Commonalities 0.8.0: when several device identifiers are provided, the API provider uses one of them without checking that they identify the same device, and echoes the one used in `device` in the response
+  * Added `maxLength`, `format` and `pattern` constraints to string fields including `Fqdn`, `Ipv4Address`, `Ipv6Address`, and description/name fields
+  * Added `maxItems: 50` to the `applicationEndpoints` response array; `maxItems: 1` to `ipv4Addresses` and `ipv6Addresses` (one address per endpoint)
+* `applicationEndpoints` array is now documented as ordered by optimality descending: the first entry is the most optimal endpoint by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* `edgeCloudZoneStatus` is now a required field in `EdgeCloudZone` and `default: unknown` is removed. API providers must always return an explicit status value (`active`, `inactive` or `unknown`). This is a new obligation on API providers and is not a breaking change for API consumers by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Documented behavior when both `appId` and `applicationEndpointsId` are provided: consistent → `200 OK` with both identifiers echoed; mismatched → `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH` by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Documented absence semantics for optional response fields (`edgeCloudZone`, `applicationEndpointDescription`, `edgeCloudRegion`, `applicationServerProviderName`, `applicationProfileId`) by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* `device` request property description updated to reference the "Identifying the device from the access token" section by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Test definitions aligned with the documented error codes and semantics and with the Commonalities API Testing Guidelines (step phrasing, C01 device error scenarios, success scenarios assert at least one endpoint) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
+
+### Fixed
+
+* `info.description` and examples aligned with the schema: endpoint definition requires at least one of `fqdn`, `ipv4Addresses`, `ipv6Addresses` (property names corrected to camelCase); `404 IDENTIFIER_NOT_FOUND` is documented for a device identifier that cannot be matched, while token-based device identification errors are `422 MISSING_IDENTIFIER` / `422 UNNECESSARY_IDENTIFIER`; `400` example no longer states that exactly one application identifier must be present by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
+
+### Removed
+
+* Removed `INVALID_TOKEN_CONTEXT` from the `403` response: the API scope does not allow confirming whether request identifiers match the access token by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed `OUT_OF_RANGE` from the `400` response: the API has no range-checked input fields by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed `SERVICE_NOT_APPLICABLE` and `UNSUPPORTED_IDENTIFIER` from the `422` response: not applicable to this API by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed test scenarios for `422 UNSUPPORTED_IDENTIFIER`, `422 SERVICE_NOT_APPLICABLE` and `503 UNAVAILABLE`, which are no longer documented in the API definition by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
+
+**Full Changelog**: https://github.com/camaraproject/ApplicationEndpointDiscovery/compare/r1.2...r2.1
