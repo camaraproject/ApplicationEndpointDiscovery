@@ -61,15 +61,17 @@ Changes documented below are compared to version 0.2.0-rc.1.
 
 ### Added
 
-* N/A
+* Added `422 UNSUPPORTED_IDENTIFIER` error code, with the corresponding test scenario by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
 
 ### Changed
 
-* N/A
+* Synced with CAMARA Commonalities r4.4 / 0.9.0: error responses aligned with the r4.4 response catalogue and shared examples, `info.description` mandatory sections updated by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+* `ipv4Addresses` and `ipv6Addresses` items now reference the common `SingleIpv4Address` and `SingleIpv6Address` schemas by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+* Aligned test definitions with CAMARA r4.4 testing artifacts by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
 
 ### Fixed
 
-* N/A
+* Fixed `ipv4Addresses` and `ipv6Addresses` descriptions (each array contains a single address) and removed `networkAccessIdentifier` from the request example by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
 
 ### Removed
 
