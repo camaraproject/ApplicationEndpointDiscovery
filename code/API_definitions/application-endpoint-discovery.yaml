@@ -91,10 +91,10 @@ info:
       - `port:` TCP or UDP port number exposed by the application instance.
       - At least one of the following parameters which define the endpoint
       (more than one MAY be present):
-        - `ipv4Addresses:` Array of IPv4 addresses exposed by the application
-        instance.
-        - `ipv6Addresses:` Array of IPv6 addresses exposed by the application
-        instance.
+        - `ipv4Addresses:` Array containing a single IPv4 address exposed by the
+        application instance.
+        - `ipv6Addresses:` Array containing a single IPv6 address exposed by the
+        application instance.
         - `fqdn:` Fully Qualified Domain Name exposed by the application instance.
       - `applicationEndpointDescription:` Optionally, a string that describes the
       application endpoint.
@@ -131,6 +131,8 @@ info:
     identifies the device, a `422 MISSING_IDENTIFIER` or
     `422 UNNECESSARY_IDENTIFIER` error is returned respectively. See the
     "Identifying the device from the access token" section.
+    - If none of the device identifiers provided in the request is supported
+    by the implementation, a `422 UNSUPPORTED_IDENTIFIER` error is returned.
     - If the API call has an `appId` that does not identify a valid
     application on the Edge Cloud, a `404 NOT_FOUND` error is returned.
     - If the API call has an `applicationEndpointsId` that does not identify
@@ -138,16 +140,18 @@ info:
     is returned.
 
     <!-- CAMARA:MANDATORY:additional-error-responses:BEGIN -->
+
     # Additional CAMARA error responses
 
     The list of error codes in this API specification is not exhaustive. Therefore the API specification MAY not document some non-mandatory error statuses as indicated in `CAMARA API Design Guide`.
 
-    Please refer to the `CAMARA_common.yaml` of the Commonalities Release associated to this API version for a complete list of error responses. The applicable Commonalities Release can be identified in the `API Readiness Checklist` document associated to this API version.
+    Please refer to the `CAMARA_common.yaml` of the Commonalities Release associated to this API version for a complete list of error responses. The applicable Commonalities Release can be identified from the `x-camara-commonalities` field, the changelog and the metadata of the released API version.
 
     As a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.
     <!-- CAMARA:MANDATORY:additional-error-responses:END -->
 
     <!-- CAMARA:MANDATORY:identifying-device-from-access-token:BEGIN -->
+
     # Identifying the device from the access token
 
     This API requires the API consumer to identify a device as the subject of the API as follows:
@@ -164,6 +168,7 @@ info:
     <!-- CAMARA:MANDATORY:identifying-device-from-access-token:END -->
 
     <!-- CAMARA:MANDATORY:authorization-and-authentication:BEGIN -->
+
     # Authorization and authentication
 
     The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
@@ -174,6 +179,7 @@ info:
     <!-- CAMARA:MANDATORY:authorization-and-authentication:END -->
 
     <!-- CAMARA:MANDATORY:request-body-strictness:BEGIN -->
+
     # Request body strictness
 
     This API rejects requests with JSON request bodies that contain properties not declared in this specification, at any nesting level. Unknown properties result in a `400 INVALID_ARGUMENT` response.
@@ -232,17 +238,17 @@ paths:
               schema:
                 $ref: "#/components/schemas/EndpointDiscoveryResult"
         "400":
-          $ref: "#/components/responses/Generic400"
+          $ref: "#/components/responses/EndpointDiscoveryBadRequest400"
         "401":
-          $ref: "#/components/responses/Generic401"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/Unauthenticated401"
         "403":
-          $ref: "#/components/responses/Generic403"
+          $ref: "../common/CAMARA_common.yaml#/components/responses/PermissionDenied403"
         "404":
-          $ref: "#/components/responses/Generic404"
+          $ref: "#/components/responses/EndpointDiscoveryNotFound404"
         "422":
-          $ref: "#/components/responses/Generic422"
+          $ref: "#/components/responses/EndpointDiscoveryUnprocessableEntity422"
         "429":
-          $ref: "#/components/responses/Generic429"
+          $ref: "#/components/responses/EndpointDiscoveryTooManyRequests429"
       tags:
         - Application Endpoint Discovery
       summary: |
@@ -440,19 +446,19 @@ components:
         fqdn:
           $ref: "#/components/schemas/Fqdn"
         ipv4Addresses:
-          description: Array of IPv4 addresses exposed by the application instance.
+          description: Array containing a single IPv4 address exposed by the application instance.
           type: array
           maxItems: 1
           minItems: 1
           items:
-            $ref: "#/components/schemas/Ipv4Address"
+            $ref: "../common/CAMARA_common.yaml#/components/schemas/SingleIpv4Address"
         ipv6Addresses:
-          description: Array of IPv6 addresses exposed by the application instance.
+          description: Array containing a single IPv6 address exposed by the application instance.
           type: array
           maxItems: 1
           minItems: 1
           items:
-            $ref: "#/components/schemas/Ipv6Address"
+            $ref: "../common/CAMARA_common.yaml#/components/schemas/SingleIpv6Address"
         port:
           $ref: "../common/CAMARA_common.yaml#/components/schemas/Port"
         edgeCloudZone:
@@ -476,29 +482,12 @@ components:
       pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)+$
       description: Fully Qualified Domain Name.
 
-    Ipv4Address:
-      type: string
-      format: ipv4
-      maxLength: 15
-      description: |
-        A single IPv4 address specified in dotted-quad form like 1.2.3.4.
-      example: "198.51.100.1"
-
-    Ipv6Address:
-      type: string
-      format: ipv6
-      maxLength: 45
-      description: |
-        A single IPv6 address, following IETF 5952 format like
-        2001:db8:85a3:8d3:1319:8a2e:370:7344.
-      example: "2001:db8:85a3::8a2e:370:7334"
-
   responses:
-    Generic400:
+    EndpointDiscoveryBadRequest400:
       description: Bad Request
       headers:
         x-correlator:
-          $ref: "#/components/headers/x-correlator"
+          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
       content:
         application/json:
           schema:
@@ -514,49 +503,18 @@ components:
                       - INVALID_ARGUMENT
           examples:
             GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: "Client specified an invalid argument, request body or query param."
-            GENERIC_400_MISSING_APP_IDENTIFIER:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_400_INVALID_ARGUMENT"
+            APPLICATION_ENDPOINT_DISCOVERY_400_MISSING_APP_IDENTIFIER:
               description: Neither appId nor applicationEndpointsId is provided. At least one must be present.
               value:
                 status: 400
                 code: INVALID_ARGUMENT
                 message: "At least one of appId or applicationEndpointsId must be provided."
-    Generic401:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic401"
-    Generic403:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: "#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 403
-                  code:
-                    enum:
-                      - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: "Client does not have sufficient permissions to perform this action."
-    Generic404:
+    EndpointDiscoveryNotFound404:
       description: Not Found
       headers:
         x-correlator:
-          $ref: "#/components/headers/x-correlator"
+          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
       content:
         application/json:
           schema:
@@ -572,29 +530,25 @@ components:
                       - NOT_FOUND
                       - IDENTIFIER_NOT_FOUND
           examples:
-            GENERIC_404_NOT_FOUND_APP_ID:
+            APPLICATION_ENDPOINT_DISCOVERY_404_APP_ID_NOT_FOUND:
               description: The provided appId does not identify a valid application on the Edge Cloud
               value:
                 status: 404
                 code: NOT_FOUND
                 message: "No application found for the provided appId."
-            GENERIC_404_NOT_FOUND_APP_ENDPOINTS_ID:
+            APPLICATION_ENDPOINT_DISCOVERY_404_APP_ENDPOINTS_ID_NOT_FOUND:
               description: The provided applicationEndpointsId does not identify any registered endpoint on the Edge Cloud
               value:
                 status: 404
                 code: NOT_FOUND
                 message: "No registered endpoints found for the provided applicationEndpointsId."
             GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: The device identifier provided in the request cannot be matched to a device on the network
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: "Device identifier not found."
-    Generic422:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_404_IDENTIFIER_NOT_FOUND"
+    EndpointDiscoveryUnprocessableEntity422:
       description: Unprocessable Content
       headers:
         x-correlator:
-          $ref: "#/components/headers/x-correlator"
+          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
       content:
         application/json:
           schema:
@@ -608,29 +562,46 @@ components:
                   code:
                     enum:
                       - MISSING_IDENTIFIER
+                      - UNSUPPORTED_IDENTIFIER
                       - UNNECESSARY_IDENTIFIER
                       - APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH
           examples:
-            GENERIC_422_MISSING_IDENTIFIER:
-              description: An identifier is not included in the request and the device identification cannot be derived from the access token
-              value:
-                status: 422
-                code: MISSING_IDENTIFIER
-                message: "The device cannot be identified."
-            GENERIC_422_UNNECESSARY_IDENTIFIER:
-              description: An explicit device identifier is provided when the device has already been identified from the access token
-              value:
-                status: 422
-                code: UNNECESSARY_IDENTIFIER
-                message: "The device is already identified by the access token."
+            GENERIC_422_MISSING_IDENTIFIER_DEVICE:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_422_MISSING_IDENTIFIER_DEVICE"
+            GENERIC_422_UNSUPPORTED_IDENTIFIER_DEVICE:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_422_UNSUPPORTED_IDENTIFIER_DEVICE"
+            GENERIC_422_UNNECESSARY_IDENTIFIER_DEVICE:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_422_UNNECESSARY_IDENTIFIER_DEVICE"
             APPLICATION_ENDPOINT_DISCOVERY_422_IDENTIFIER_MISMATCH:
               description: Both appId and applicationEndpointsId are provided but the applicationEndpointsId is not associated with the application identified by appId
               value:
                 status: 422
                 code: APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH
                 message: "The provided applicationEndpointsId is not associated with the provided appId."
-    Generic429:
-      $ref: "../common/CAMARA_common.yaml#/components/responses/Generic429"
+    EndpointDiscoveryTooManyRequests429:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: "../common/CAMARA_common.yaml#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "../common/CAMARA_common.yaml#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 429
+                  code:
+                    enum:
+                      - QUOTA_EXCEEDED
+                      - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_429_QUOTA_EXCEEDED"
+            GENERIC_429_TOO_MANY_REQUESTS:
+              $ref: "../common/CAMARA_common.yaml#/components/examples/GENERIC_429_TOO_MANY_REQUESTS"
 
   examples:
     IdentifyDeviceBy3LeggedTokenAppId:
@@ -662,5 +633,4 @@ components:
           ipv4Address:
             publicAddress: "84.125.93.10"
             publicPort: 59765
-          networkAccessIdentifier: "123456789@domain.com"
         appId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"

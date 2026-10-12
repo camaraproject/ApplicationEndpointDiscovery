@@ -22,7 +22,7 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
-    And the request body is set by default to a request body compliant with the schema at "/components/schemas/EndpointDiscoveryInfo"
+    And the request body is set by default to a request body compliant with the schema at "#/components/schemas/EndpointDiscoveryInfo"
 
   # Success scenarios
 
@@ -35,8 +35,8 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/EndpointDiscoveryResult"
-    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "/components/schemas/ApplicationEndpoint"
+    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
+    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "#/components/schemas/ApplicationEndpoint"
     And the response property "$.appId" has same value as the request property "$.appId"
     And the response property "$.device" exists only if more than one device identifier was provided in the request body, and contains a single device identifier that was included in the request
 
@@ -49,8 +49,8 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/EndpointDiscoveryResult"
-    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "/components/schemas/ApplicationEndpoint"
+    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
+    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "#/components/schemas/ApplicationEndpoint"
     And the response property "$.applicationEndpointsId" has same value as the request property "$.applicationEndpointsId"
 
   @application_endpoint_discovery_success_scenario_03_appid_multiple_endpoints
@@ -61,8 +61,8 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/EndpointDiscoveryResult"
-    And the response property "$.applicationEndpoints" contains more than one element, each complying with the OAS schema at "/components/schemas/ApplicationEndpoint"
+    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
+    And the response property "$.applicationEndpoints" contains more than one element, each complying with the OAS schema at "#/components/schemas/ApplicationEndpoint"
     And the response property "$.applicationEndpoints" is ordered by optimality in descending order
     And the response property "$.applicationEndpoints[0]" is the endpoint with the shortest network path to the testing device
 
@@ -76,10 +76,10 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/EndpointDiscoveryResult"
-    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "/components/schemas/ApplicationEndpoint"
+    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
+    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "#/components/schemas/ApplicationEndpoint"
     And the response property "$.device" exists
-    And the response property "$.device" complies with the OAS schema at "/components/schemas/DeviceResponse"
+    And the response property "$.device" complies with the OAS schema at "#/components/schemas/DeviceResponse"
     And the response property "$.device" contains a single device identifier that was included in the request
 
   @application_endpoint_discovery_success_scenario_05_appid_and_applicationEndpointsId
@@ -91,8 +91,8 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 200
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response body complies with the OAS schema at "/components/schemas/EndpointDiscoveryResult"
-    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "/components/schemas/ApplicationEndpoint"
+    And the response body complies with the OAS schema at "#/components/schemas/EndpointDiscoveryResult"
+    And the response property "$.applicationEndpoints" contains at least one element, each complying with the OAS schema at "#/components/schemas/ApplicationEndpoint"
     And the response property "$.appId" has same value as the request property "$.appId"
     And the response property "$.applicationEndpointsId" has same value as the request property "$.applicationEndpointsId"
 
@@ -120,10 +120,10 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
 
     Examples:
       | device_identifier                | oas_spec_schema                             |
-      | $.device.phoneNumber             | /components/schemas/PhoneNumber             |
-      | $.device.ipv4Address             | /components/schemas/DeviceIpv4Address       |
-      | $.device.ipv6Address             | /components/schemas/DeviceIpv6Address       |
-      | $.device.networkAccessIdentifier | /components/schemas/NetworkAccessIdentifier |
+      | $.device.phoneNumber             | #/components/schemas/PhoneNumber             |
+      | $.device.ipv4Address             | #/components/schemas/DeviceIpv4Address       |
+      | $.device.ipv6Address             | #/components/schemas/DeviceIpv6Address       |
+      | $.device.networkAccessIdentifier | #/components/schemas/NetworkAccessIdentifier |
 
   # This scenario may happen e.g. with 2-legged access tokens, which do not identify a single device.
   @application_endpoint_discovery_C01.03_device_not_found
@@ -144,7 +144,7 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "UNNECESSARY_IDENTIFIER"
-    And the response property "$.message" contains a user friendly text
+    And the response property "$.message" contains a user-friendly text
 
   @application_endpoint_discovery_C01.05_missing_device
   Scenario: Device not included and cannot be deduced from the access token
@@ -154,7 +154,18 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "MISSING_IDENTIFIER"
-    And the response property "$.message" contains a user friendly text
+    And the response property "$.message" contains a user-friendly text
+
+  @application_endpoint_discovery_C01.06_unsupported_device
+  Scenario: None of the provided device identifiers is supported by the implementation
+    Given that some types of device identifiers are not supported by the implementation
+    And the header "Authorization" is set to a valid access token which does not identify a single device
+    And the request body property "$.device" only includes device identifiers not supported by the implementation
+    When the request "getOptimalAppEndpoints" is sent
+    Then the response status code is 422
+    And the response property "$.status" is 422
+    And the response property "$.code" is "UNSUPPORTED_IDENTIFIER"
+    And the response property "$.message" contains a user-friendly text
 
   # Error code 400
 
@@ -188,8 +199,8 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
 
     Examples:
       | input_property           | oas_spec_schema                            |
-      | $.appId                  | /components/schemas/AppId                  |
-      | $.applicationEndpointsId | /components/schemas/ApplicationEndpointsId |
+      | $.appId                  | #/components/schemas/AppId                  |
+      | $.applicationEndpointsId | #/components/schemas/ApplicationEndpointsId |
 
   @application_endpoint_discovery_400.4_no_application_identifier
   Scenario: Neither appId nor applicationEndpointsId is included in the request body
@@ -204,7 +215,7 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
 
   @application_endpoint_discovery_400.5_invalid_x-correlator
   Scenario: Invalid x-correlator value
-    Given the header "x-correlator" does not comply with the OAS schema at "/components/schemas/XCorrelator"
+    Given the header "x-correlator" does not comply with the OAS schema at "#/components/schemas/XCorrelator"
     When the request "getOptimalAppEndpoints" is sent
     Then the response status code is 400
     And the response property "$.status" is 400
@@ -291,4 +302,4 @@ Feature: CAMARA Application Endpoint Discovery API, vwip - Operation getOptimalA
     Then the response status code is 422
     And the response property "$.status" is 422
     And the response property "$.code" is "APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH"
-    And the response property "$.message" contains a user friendly text
+    And the response property "$.message" contains a user-friendly text
