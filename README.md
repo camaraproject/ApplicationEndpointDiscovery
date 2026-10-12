@@ -40,9 +40,9 @@ Sandbox API Repository to describe, develop, document, and test the ApplicationE
 
 ### Upcoming Release Preview
 
-* Pre-release: [r2.1](https://github.com/camaraproject/ApplicationEndpointDiscovery/releases/tag/r2.1) (release candidate)
-  * **application-endpoint-discovery 0.2.0-rc.1**
-  [[YAML]](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r2.1/code/API_definitions/application-endpoint-discovery.yaml)  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.1/code/API_definitions/application-endpoint-discovery.yaml&nocors)  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.1/code/API_definitions/application-endpoint-discovery.yaml)
+* Pre-release: [r2.2](https://github.com/camaraproject/ApplicationEndpointDiscovery/releases/tag/r2.2) (release candidate)
+  * **application-endpoint-discovery 0.2.0-rc.2**
+  [[YAML]](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r2.2/code/API_definitions/application-endpoint-discovery.yaml)  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.2/code/API_definitions/application-endpoint-discovery.yaml&nocors)  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.2/code/API_definitions/application-endpoint-discovery.yaml)
 
 
 _The above section is automatically synchronized by CAMARA project-administration._
