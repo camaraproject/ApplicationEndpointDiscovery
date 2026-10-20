@@ -2,6 +2,7 @@
 
 <!-- TOC:START -->
 ## Table of Contents
+- [r2.2](#r22)
 - [r2.1](#r21)
 <!-- TOC:END -->
 
@@ -13,6 +14,52 @@ The below sections record the changes for each API version in each release as fo
 * for the first release-candidate, all changes since the last public release
 * for subsequent release-candidate(s), only the delta to the previous release-candidate
 * for a public release, the consolidated changes since the previous public release
+
+# r2.2
+
+## Release Notes
+
+This release candidate contains the definition and documentation of
+* application-endpoint-discovery 0.2.0-rc.2
+
+The API definition(s) are based on
+* Commonalities r4.4 (0.9.0)
+* Identity and Consent Management r4.2 (0.5.0)
+
+## application-endpoint-discovery 0.2.0-rc.2
+
+**application-endpoint-discovery 0.2.0-rc.2 is a release-candidate version of this API.**
+
+Changes documented below are compared to version 0.2.0-rc.1.
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.2/code/API_definitions/application-endpoint-discovery.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ApplicationEndpointDiscovery/r2.2/code/API_definitions/application-endpoint-discovery.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/ApplicationEndpointDiscovery/blob/r2.2/code/API_definitions/application-endpoint-discovery.yaml)
+
+### Breaking changes
+
+* N/A
+
+### Added
+
+* Added `422 UNSUPPORTED_IDENTIFIER` error code, with the corresponding test scenario by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+
+### Changed
+
+* Synced with CAMARA Commonalities r4.4 / 0.9.0: error responses aligned with the r4.4 response catalogue and shared examples, `info.description` mandatory sections updated by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+* `ipv4Addresses` and `ipv6Addresses` items now reference the common `SingleIpv4Address` and `SingleIpv6Address` schemas by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+* Aligned test definitions with CAMARA r4.4 testing artifacts by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+
+### Fixed
+
+* Fixed `ipv4Addresses` and `ipv6Addresses` descriptions (each array contains a single address) and removed `networkAccessIdentifier` from the request example by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+
+### Removed
+
+* N/A
+
+**Full Changelog**: https://github.com/camaraproject/ApplicationEndpointDiscovery/compare/r2.1...r2.2
 
 # r2.1
 
