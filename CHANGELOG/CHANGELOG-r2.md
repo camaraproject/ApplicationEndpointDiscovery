@@ -78,23 +78,43 @@ Changes documented below are compared to version 0.1.0.
 
 ### Breaking changes
 
-* N/A
+* Request bodies containing properties not declared in the API specification, at any nesting level, are now rejected with `400 INVALID_ARGUMENT` (Commonalities "Request body strictness" rule) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
+* `device.ipv4Address.publicPort` now requires a value between 1 and 65535 (previously 0 was accepted), inherited from the Commonalities `Port` schema by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
 
 ### Added
 
-* N/A
+* Added API-specific `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH` error code, returned when both `appId` and `applicationEndpointsId` are provided but the `applicationEndpointsId` is not associated with the application identified by `appId` by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Added API-specific `404 NOT_FOUND` examples for `appId` not found and `applicationEndpointsId` not found by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Added test scenarios for `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH`, for `appId` and `applicationEndpointsId` provided together, for multiple endpoints ordered by optimality, and for `400 INVALID_ARGUMENT` on empty request body, non-schema-compliant application identifiers and invalid `x-correlator` by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
 
 ### Changed
 
-* N/A
+* Synced with CAMARA Commonalities r4.4 / 0.9.0 (previously 0.6) and Identity and Consent Management r4.2 (0.5.0) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42 and https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
+  * Common definitions reused via `$ref` into `CAMARA_common.yaml`; error responses aligned with the r4.4 response catalogue and shared examples
+  * Added the mandatory `info.description` sections (authorization and authentication, additional error responses, request body strictness, identifying the device from the access token)
+  * Request bodies with undeclared properties are rejected with `400 INVALID_ARGUMENT` (see Breaking changes)
+  * `device.ipv4Address.publicPort` minimum raised from 0 to 1 (see Breaking changes)
+  * `Device` semantics follow Commonalities: when several device identifiers are provided, the API provider uses one of them without checking that they identify the same device, and echoes the one used in `device` in the response
+  * Added `maxLength`, `format` and `pattern` constraints to string fields, `maxItems: 50` to the `applicationEndpoints` response array, and `maxItems: 1` to `ipv4Addresses` and `ipv6Addresses` (one address per endpoint)
+  * `ipv4Addresses` and `ipv6Addresses` items now reference the common `SingleIpv4Address` and `SingleIpv6Address` schemas
+* `applicationEndpoints` array is now documented as ordered by optimality descending: the first entry is the most optimal endpoint by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* `edgeCloudZoneStatus` is now a required field in `EdgeCloudZone` and `default: unknown` is removed. API providers must always return an explicit status value (`active`, `inactive` or `unknown`). This is a new obligation on API providers and is not a breaking change for API consumers by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Documented behavior when both `appId` and `applicationEndpointsId` are provided: consistent → `200 OK` with both identifiers echoed; mismatched → `422 APPLICATION_ENDPOINT_DISCOVERY.IDENTIFIER_MISMATCH` by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Documented absence semantics for optional response fields (`edgeCloudZone`, `applicationEndpointDescription`, `edgeCloudRegion`, `applicationServerProviderName`, `applicationProfileId`) by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* `device` request property description updated to reference the "Identifying the device from the access token" section by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Test definitions aligned with the documented error codes and semantics, with the Commonalities API Testing Guidelines and with the CAMARA r4.4 testing artifacts by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54 and https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
 
 ### Fixed
 
-* N/A
+* `info.description` and examples aligned with the schema: endpoint definition requires at least one of `fqdn`, `ipv4Addresses`, `ipv6Addresses` (property names corrected to camelCase); `404 IDENTIFIER_NOT_FOUND` is documented for a device identifier that cannot be matched, while token-based device identification errors are `422 MISSING_IDENTIFIER` / `422 UNNECESSARY_IDENTIFIER`; `400` example no longer states that exactly one application identifier must be present by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
+* Fixed `ipv4Addresses` and `ipv6Addresses` descriptions (each array contains a single address) and removed `networkAccessIdentifier` from the request example by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
 
 ### Removed
 
-* N/A
+* Removed `INVALID_TOKEN_CONTEXT` from the `403` response: the API scope does not allow confirming whether request identifiers match the access token by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed `OUT_OF_RANGE` from the `400` response: the API has no range-checked input fields by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed `SERVICE_NOT_APPLICABLE` from the `422` response: not applicable to this API by @urvika-v in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/48
+* Removed test scenarios for `422 SERVICE_NOT_APPLICABLE` and `503 UNAVAILABLE`, which are not documented in the API definition by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
 
 **Full Changelog**: https://github.com/camaraproject/ApplicationEndpointDiscovery/compare/r1.2...r2.3
 
