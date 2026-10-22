@@ -1,0 +1,13 @@
+repository:
+  repository_name: ApplicationEndpointDiscovery
+  release_tag: r2.3
+  release_type: public-release
+  release_date: null
+  src_commit_sha: 992785026effb7dd2bb9e4756c90a5e5108e90b0
+apis:
+- api_name: application-endpoint-discovery
+  api_version: 0.2.0
+  api_title: Application Endpoint Discovery
+dependencies:
+  commonalities_release: r4.4 (0.9.0)
+  identity_consent_management_release: r4.2 (0.5.0)
