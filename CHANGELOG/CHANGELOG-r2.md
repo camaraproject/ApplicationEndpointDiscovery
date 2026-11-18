@@ -105,7 +105,7 @@ Changes documented below are compared to version 0.1.0.
 
 ### Fixed
 
-* `info.description` and examples aligned with the schema: endpoint definition requires at least one of `fqdn`, `ipv4Addresses`, `ipv6Addresses` (property names corrected to camelCase); `404 IDENTIFIER_NOT_FOUND` is documented for a device identifier that cannot be matched, while token-based device identification errors are `422 MISSING_IDENTIFIER` / `422 UNNECESSARY_IDENTIFIER`; `400` example no longer states that exactly one application identifier must be present by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
+* `info.description` and examples aligned with the schema: endpoint definition requires at least one of `fqdn`, `ipv4Addresses`, `ipv6Addresses` (property names corrected to camelCase); `404 IDENTIFIER_NOT_FOUND` is documented for a device identifier that cannot be matched, while token-based device identification errors are `422 MISSING_IDENTIFIER` / `422 UNNECESSARY_IDENTIFIER` by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/54
 * Fixed `ipv4Addresses` and `ipv6Addresses` descriptions (each array contains a single address) and removed `networkAccessIdentifier` from the request example by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
 
 ### Removed
