@@ -2,7 +2,7 @@ repository:
   repository_name: ApplicationEndpointDiscovery
   release_tag: r2.3
   release_type: public-release
-  release_date: null
+  release_date: '2026-11-18T22:26:16Z'
   src_commit_sha: 992785026effb7dd2bb9e4756c90a5e5108e90b0
 apis:
 - api_name: application-endpoint-discovery
