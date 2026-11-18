@@ -78,7 +78,6 @@ Changes documented below are compared to version 0.1.0.
 
 ### Breaking changes
 
-* Request bodies containing properties not declared in the API specification, at any nesting level, are now rejected with `400 INVALID_ARGUMENT` (Commonalities "Request body strictness" rule) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
 * `device.ipv4Address.publicPort` now requires a value between 1 and 65535 (previously 0 was accepted), inherited from the Commonalities `Port` schema by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42
 
 ### Added
