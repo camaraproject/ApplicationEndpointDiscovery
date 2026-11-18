@@ -91,7 +91,7 @@ Changes documented below are compared to version 0.1.0.
 * Synced with CAMARA Commonalities r4.4 / 0.9.0 (previously 0.6) and Identity and Consent Management r4.2 (0.5.0) by @maheshc01 in https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/42 and https://github.com/camaraproject/ApplicationEndpointDiscovery/pull/61
   * Common definitions reused via `$ref` into `CAMARA_common.yaml`; error responses aligned with the r4.4 response catalogue and shared examples
   * Added the mandatory `info.description` sections (authorization and authentication, additional error responses, request body strictness, identifying the device from the access token)
-  * Request bodies with undeclared properties are rejected with `400 INVALID_ARGUMENT` (see Breaking changes)
+  * Request bodies with undeclared properties are rejected with `400 INVALID_ARGUMENT` (Commonalities "Request body strictness" rule; not a breaking change per the API Design Guide, as such request bodies were never compliant with the specification)
   * `device.ipv4Address.publicPort` minimum raised from 0 to 1 (see Breaking changes)
   * `Device` semantics follow Commonalities: when several device identifiers are provided, the API provider uses one of them without checking that they identify the same device, and echoes the one used in `device` in the response
   * Added `maxLength`, `format` and `pattern` constraints to string fields, `maxItems: 50` to the `applicationEndpoints` response array, and `maxItems: 1` to `ipv4Addresses` and `ipv6Addresses` (one address per endpoint)
